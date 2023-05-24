@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Music"
 include(":app")
+include(":core:data")
+include(":core:model")
