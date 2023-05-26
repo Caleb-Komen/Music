@@ -5,10 +5,12 @@ compileSdk = "33"
 composeBom = "2022.10.00"
 composeCompiler = "1.4.6"
 coreKtx = "1.10.1"
+coroutines = "1.7.1"
 extJunit = "1.1.5"
 junit4 = "4.13.2"
 kotlin = "1.8.20"
 lifecycleRuntimeKtx = "2.6.1"
+media3 = "1.0.1"
 minSdk = "24"
 targetSdk = "33"
 
@@ -24,7 +26,10 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-media3-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
+androidx-media3-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "extJunit" }
 
 [plugins]

@@ -5,12 +5,15 @@ import android.provider.MediaStore
 import com.techdroidcentre.model.Song
 
 interface SongsRepository {
-    suspend fun getSongs(): List<Song>
+    suspend fun getSongs()
 }
 
 class DefaultSongsRepository(
     private val contentResolver: ContentResolver
 ): SongsRepository {
+    var songs = emptyList<Song>()
+        private set
+
     private val projection = arrayOf(
         MediaStore.Audio.Media._ID,
         MediaStore.Audio.Media.TITLE,
@@ -21,8 +24,8 @@ class DefaultSongsRepository(
         MediaStore.Audio.Media.DURATION,
         MediaStore.Audio.Media.TRACK
     )
-    override suspend fun getSongs(): List<Song> {
-        val songs = mutableListOf<Song>()
+    override suspend fun getSongs() {
+        val songsList = mutableListOf<Song>()
         contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
@@ -48,10 +51,10 @@ class DefaultSongsRepository(
                 val artist = cursor.getString(artistColumn)
                 val duration = cursor.getLong(durationColumn)
                 val trackNumber = cursor.getInt(trackNumberColumn)
-                songs += Song(id,title, albumId, album, artistId, artist, duration, trackNumber)
+                songsList += Song(id,title, albumId, album, artistId, artist, duration, trackNumber)
             }
         }
-        return songs
+        songs = songsList
     }
 
 }

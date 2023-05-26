@@ -49,6 +49,8 @@ android {
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
 
+    implementation(project(":player"))
+    
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
