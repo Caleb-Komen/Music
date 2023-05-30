@@ -6,12 +6,13 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.techdroidcentre.data.repository.DefaultSongsRepository
 import com.techdroidcentre.data.repository.SongsRepository
+import javax.inject.Inject
 
 const val ROOT_ID = "ROOT_ID"
 const val SONGS_ID = "SONGS_ID"
 
 @OptIn(androidx.media3.common.util.UnstableApi::class)
-class MediaItemTree(private val songsRepository: SongsRepository) {
+class MediaItemTree @Inject constructor(songsRepository: SongsRepository) {
     private val children = mutableMapOf<String, List<MediaItem>>()
 
     init {

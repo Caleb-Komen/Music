@@ -11,18 +11,24 @@ import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.techdroidcentre.data.repository.SongsRepository
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MusicService: MediaLibraryService() {
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-    private lateinit var songsRepository: SongsRepository
+    @Inject
+    lateinit var songsRepository: SongsRepository
 
+    @Inject
     private lateinit var mediaItemTree: MediaItemTree
+
     private lateinit var player: ExoPlayer
 
     override fun onCreate() {

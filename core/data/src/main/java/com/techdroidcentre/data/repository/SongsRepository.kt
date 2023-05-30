@@ -3,12 +3,13 @@ package com.techdroidcentre.data.repository
 import android.content.ContentResolver
 import android.provider.MediaStore
 import com.techdroidcentre.model.Song
+import javax.inject.Inject
 
 interface SongsRepository {
     suspend fun getSongs()
 }
 
-class DefaultSongsRepository(
+class DefaultSongsRepository @Inject constructor(
     private val contentResolver: ContentResolver
 ): SongsRepository {
     var songs = emptyList<Song>()
