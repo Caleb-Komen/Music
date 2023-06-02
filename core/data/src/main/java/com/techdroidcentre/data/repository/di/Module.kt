@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import com.techdroidcentre.data.repository.DefaultSongsRepository
 import com.techdroidcentre.data.repository.SongsRepository
+import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -11,7 +12,8 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
-object Module {
+@Module
+object DataModule {
     @Singleton
     @Provides
     fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {

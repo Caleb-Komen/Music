@@ -26,10 +26,13 @@ class MusicService: MediaLibraryService() {
     @Inject
     lateinit var songsRepository: SongsRepository
 
-    @Inject
-    private lateinit var mediaItemTree: MediaItemTree
+    val mediaItemTree: MediaItemTree by lazy {
+        MediaItemTree(songsRepository)
+    }
 
     private lateinit var player: ExoPlayer
+
+    private lateinit var mediaLibrarySession: MediaLibrarySession
 
     override fun onCreate() {
         super.onCreate()
@@ -45,15 +48,20 @@ class MusicService: MediaLibraryService() {
                 true
             )
             .build()
+        mediaLibrarySession = MediaLibrarySession.Builder(this, player, librarySessionCallback).build()
     }
 
     override fun onDestroy() {
         serviceScope.cancel()
+        mediaLibrarySession.apply {
+            player.release()
+            release()
+        }
         super.onDestroy()
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? {
-        return MediaLibrarySession.Builder(this, player, librarySessionCallback).build()
+        return mediaLibrarySession
     }
 
     private val librarySessionCallback = object: MediaLibrarySession.Callback {
@@ -69,7 +77,9 @@ class MusicService: MediaLibraryService() {
             browser: MediaSession.ControllerInfo,
             params: LibraryParams?
         ): ListenableFuture<LibraryResult<MediaItem>> {
-            return Futures.immediateFuture(LibraryResult.ofItem(mediaItemTree[ROOT_ID][0], params))
+            val rootItem = mediaItemTree[ROOT_ID]?.mediaItem ?:
+                return Futures.immediateFuture(LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE))
+            return Futures.immediateFuture(LibraryResult.ofItem(rootItem, params))
         }
 
         override fun onGetItem(
@@ -88,7 +98,10 @@ class MusicService: MediaLibraryService() {
             pageSize: Int,
             params: LibraryParams?
         ): ListenableFuture<LibraryResult<ImmutableList<MediaItem>>> {
-            val children = mediaItemTree[parentId]
+            val children = mediaItemTree[parentId]?.getChildren()
+                ?: return Futures.immediateFuture(
+                    LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+                )
             return Futures.immediateFuture(LibraryResult.ofItemList(children, params))
         }
 

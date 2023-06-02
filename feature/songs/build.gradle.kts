@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techdroidcentre.player"
+    namespace = "com.techdroidcentre.songs"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -28,15 +28,31 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
 }
 
 dependencies {
-    implementation(project(":core:data"))
-    implementation(project(":core:model"))
+    val composeBom = platform(libs.androidx.compose.bom)
 
-    implementation(libs.androidx.media3.exoplayer)
+    implementation(project(":core:common"))
+    implementation(project(":core:model"))
+    implementation(project(":player"))
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(composeBom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+
     implementation(libs.androidx.media3.session)
-    implementation(libs.kotlinx.coroutines.android)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 }

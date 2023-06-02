@@ -6,38 +6,52 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.techdroidcentre.data.repository.DefaultSongsRepository
 import com.techdroidcentre.data.repository.SongsRepository
-import javax.inject.Inject
 
 const val ROOT_ID = "ROOT_ID"
 const val SONGS_ID = "SONGS_ID"
 
 @OptIn(androidx.media3.common.util.UnstableApi::class)
-class MediaItemTree @Inject constructor(songsRepository: SongsRepository) {
-    private val children = mutableMapOf<String, List<MediaItem>>()
+class MediaItemTree (songsRepository: SongsRepository) {
+    private val treeNode = mutableMapOf<String, MediaItemNode>()
 
     init {
-        val songs: MutableList<MediaItem> = mutableListOf()
-
-        (songsRepository as DefaultSongsRepository).songs.forEach { song ->
-            val mediaItem = buildMediaItem(
-                song.id.toString(),
-                isBrowsable = false,
-                isPlayable = true,
-                title = song.title,
-                album = song.album,
-                artist = song.artist,
-                trackNumber = song.trackNumber
-            )
-            songs.add(mediaItem)
-        }
-
-        children[ROOT_ID] = listOf(
+        treeNode[ROOT_ID] = MediaItemNode(
             buildMediaItem(ROOT_ID, isBrowsable = true, isPlayable = false)
         )
-        children[SONGS_ID] = songs
+        treeNode[SONGS_ID] = MediaItemNode(
+            buildMediaItem(SONGS_ID, isBrowsable = true, isPlayable = false)
+        )
+        treeNode[ROOT_ID]!!.addChild(SONGS_ID)
+        (songsRepository as DefaultSongsRepository).songs.forEach { song ->
+            val id = song.id.toString()
+            treeNode[id] = MediaItemNode(
+                buildMediaItem(
+                    mediaId = id,
+                    isBrowsable = false,
+                    isPlayable = true,
+                    title = song.title,
+                    album = song.album,
+                    artist = song.artist,
+                    trackNumber = song.trackNumber
+                )
+            )
+            treeNode[SONGS_ID]!!.addChild(id)
+        }
     }
 
-    operator fun get(id: String):  List<MediaItem> = children[id] ?: emptyList()
+    inner class MediaItemNode(val mediaItem: MediaItem) {
+        private val children: MutableList<MediaItem> = mutableListOf()
+
+        fun addChild(childId: String) {
+            children.add(treeNode[childId]!!.mediaItem)
+        }
+
+        fun getChildren(): List<MediaItem> {
+            return children
+        }
+    }
+
+    operator fun get(id: String):  MediaItemNode? = treeNode[id]
 
     private fun buildMediaItem(
         mediaId: String,

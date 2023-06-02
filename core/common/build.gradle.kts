@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techdroidcentre.player"
+    namespace = "com.techdroidcentre.common"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -31,12 +31,10 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:data"))
-    implementation(project(":core:model"))
+    implementation(project(":player"))
 
-    implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.session)
-    implementation(libs.kotlinx.coroutines.android)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 }
