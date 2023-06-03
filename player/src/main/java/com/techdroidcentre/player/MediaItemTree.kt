@@ -1,5 +1,6 @@
 package com.techdroidcentre.player
 
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
@@ -27,12 +28,15 @@ class MediaItemTree (songsRepository: SongsRepository) {
             treeNode[id] = MediaItemNode(
                 buildMediaItem(
                     mediaId = id,
+                    uri = song.uri,
                     isBrowsable = false,
                     isPlayable = true,
                     title = song.title,
                     album = song.album,
                     artist = song.artist,
-                    trackNumber = song.trackNumber
+                    trackNumber = song.trackNumber,
+                    artUri = Uri.parse(song.uri),
+                    artworkData = getArtworkData(song.path)
                 )
             )
             treeNode[SONGS_ID]!!.addChild(id)
@@ -62,13 +66,15 @@ class MediaItemTree (songsRepository: SongsRepository) {
         album: String? = null,
         artist: String? = null,
         artUri: Uri? = null,
-        trackNumber: Int? = null
+        trackNumber: Int? = null,
+        artworkData: ByteArray? = null
     ): MediaItem {
         val mediaMetadata = MediaMetadata.Builder()
             .setTitle(title)
             .setAlbumTitle(album)
             .setArtist(artist)
             .setArtworkUri(artUri)
+            .setArtworkData(artworkData, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
             .setTrackNumber(trackNumber)
             .setIsBrowsable(isBrowsable)
             .setIsPlayable(isPlayable)
@@ -79,5 +85,13 @@ class MediaItemTree (songsRepository: SongsRepository) {
             .setUri(uri)
             .setMediaMetadata(mediaMetadata)
             .build()
+    }
+
+    private fun getArtworkData(path: String): ByteArray? {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(path)
+        val art = retriever.embeddedPicture
+        retriever.release()
+        return art
     }
 }

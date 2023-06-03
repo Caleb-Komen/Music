@@ -1,6 +1,11 @@
 package com.techdroidcentre.songs
 
-import androidx.compose.foundation.Image
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
+import android.util.Size
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,13 +28,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
-import com.techdroidcentre.model.Song
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 
 @Composable
 fun SongsScreen(
@@ -88,8 +95,16 @@ fun SongItem(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = androidx.media3.session.R.drawable.media3_icon_circular_play),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                            getThumbnail(LocalContext.current, song.artworkUri)
+                        else song.artworkData
+                    )
+                    .crossfade(true)
+                    .build(),
+                error = painterResource(androidx.media3.session.R.drawable.media3_icon_circular_play),
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)
@@ -114,5 +129,18 @@ fun SongItem(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Divider(thickness = 0.5.dp)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.Q)
+fun getThumbnail(context: Context, artworkUri: String): Bitmap? {
+    return try {
+        context.contentResolver.loadThumbnail(
+            Uri.parse(artworkUri),
+            Size(300, 300),
+            null
+        )
+    } catch(e: Exception) {
+        null
     }
 }

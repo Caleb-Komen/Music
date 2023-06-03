@@ -10,7 +10,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.session.MediaBrowser
 import com.google.common.util.concurrent.MoreExecutors
 import com.techdroidcentre.common.MusicServiceConnection
-import com.techdroidcentre.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -19,7 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
 class SongsViewModel(
-    val musicServiceConnection: MusicServiceConnection,
+    private val musicServiceConnection: MusicServiceConnection,
     rootMediaItem: MediaItem
 ): ViewModel() {
     private val _uiState = MutableStateFlow(SongsUiState())
@@ -87,23 +86,4 @@ class SongsViewModel(
             }
         }
     }
-}
-
-data class SongsUiState(
-    val songs: List<Song> = emptyList(),
-    val error: String = "",
-    val loading: Boolean = false,
-)
-
-fun MediaItem.toSong(): Song {
-    return Song(
-        id = mediaId.toLong(),
-        title = this.mediaMetadata.title.toString(),
-        albumId = 0L,
-        album = mediaMetadata.albumTitle.toString(),
-        artistId = 0L,
-        artist = mediaMetadata.artist.toString(),
-        duration = 0L,
-        trackNumber = mediaMetadata.trackNumber!!
-    )
 }
