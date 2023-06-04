@@ -99,9 +99,9 @@ fun SongItem(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(vertical = 4.dp)
-            .clickable { playOrPause(song) }
+        modifier = modifier.clickable { playOrPause(song) }
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
