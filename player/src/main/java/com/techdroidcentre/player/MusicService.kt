@@ -105,6 +105,15 @@ class MusicService: MediaLibraryService() {
             return Futures.immediateFuture(LibraryResult.ofItemList(children, params))
         }
 
+        override fun onAddMediaItems(
+            mediaSession: MediaSession,
+            controller: MediaSession.ControllerInfo,
+            mediaItems: MutableList<MediaItem>
+        ): ListenableFuture<MutableList<MediaItem>> {
+            val updatedMediaItems = mediaItems.map { mediaItemTree.getMediaItem(it.mediaId) ?: it }.toMutableList()
+            return Futures.immediateFuture(updatedMediaItems)
+        }
+
         override fun onSubscribe(
             session: MediaLibrarySession,
             browser: MediaSession.ControllerInfo,

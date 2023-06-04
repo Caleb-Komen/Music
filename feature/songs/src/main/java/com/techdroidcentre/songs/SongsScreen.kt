@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Size
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,12 +46,17 @@ fun SongsScreen(
     viewModel: SongsViewModel = viewModel(factory = SongsViewModel.provideFactory(rootMediaItem))
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    SongsScreen(uiState = uiState, modifier = modifier)
+    SongsScreen(
+        uiState = uiState,
+        playOrPause = viewModel::playOrPause,
+        modifier = modifier
+    )
 }
 
 @Composable
 fun SongsScreen(
     uiState: SongsUiState,
+    playOrPause: (Song) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -71,7 +77,7 @@ fun SongsScreen(
             }
 
             items(items = uiState.songs, key = { it.id }) { song ->
-                SongItem(song = song)
+                SongItem(song = song, playOrPause = playOrPause)
             }
         }
         if (uiState.error.isNotBlank()) {
@@ -89,9 +95,13 @@ fun SongsScreen(
 @Composable
 fun SongItem(
     song: Song,
+    playOrPause: (Song) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
+    Column(
+        modifier = modifier.padding(vertical = 4.dp)
+            .clickable { playOrPause(song) }
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {

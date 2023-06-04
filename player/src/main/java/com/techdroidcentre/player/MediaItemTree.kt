@@ -87,6 +87,10 @@ class MediaItemTree (songsRepository: SongsRepository) {
             .build()
     }
 
+    fun getMediaItem(id: String): MediaItem? {
+        return treeNode[id]?.mediaItem
+    }
+
     private fun getArtworkData(path: String): ByteArray? {
         val retriever = MediaMetadataRetriever()
         retriever.setDataSource(path)

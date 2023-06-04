@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
+import androidx.media3.session.MediaController
 import com.google.common.util.concurrent.MoreExecutors
 import com.techdroidcentre.common.MusicServiceConnection
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,12 +27,15 @@ class SongsViewModel(
     private val _uiState = MutableStateFlow(SongsUiState())
     val uiState: StateFlow<SongsUiState> = _uiState
 
+    private var mediaBrowser: MediaBrowser? = null
+
     init {
         _uiState.update {
             it.copy(loading = true)
         }
         musicServiceConnection.mediaBrowser.onEach { browser ->
-            val mediaBrowser = browser ?: return@onEach
+            this.mediaBrowser = browser
+            val mediaBrowser = this.mediaBrowser ?: return@onEach
             fetchRootChildren(mediaBrowser, rootMediaItem)
         }.catch { throwable ->
             _uiState.update {
@@ -41,6 +47,31 @@ class SongsViewModel(
             }
         }.launchIn(viewModelScope)
 
+    }
+
+    fun playOrPause(
+        song: Song
+    ) {
+        val player = this.mediaBrowser ?: return
+        val nowPlaying = musicServiceConnection.nowPlaying.value
+        val isPrepared = player.playbackState != Player.STATE_IDLE
+
+        if (isPrepared && song.id.toString() == nowPlaying.mediaId) {
+            when {
+                player.isPlaying -> player.pause()
+                player.playbackState == Player.STATE_ENDED -> player.seekTo(C.TIME_UNSET)
+                else -> player.play()
+            }
+        } else {
+            val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren("SONGS_ID").toMutableList()
+            val mediaItem = playlist.first { it.mediaId == song.id.toString() }
+            if (playlist.isEmpty()) playlist.add(mediaItem)
+            val indexOf = playlist.indexOf(mediaItem)
+            val startIndex = if (indexOf >=0 ) indexOf else 0
+            player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
+            player.prepare()
+            player.play()
+        }
     }
 
     private fun fetchRootChildren(mediaBrowser: MediaBrowser, rootItem: MediaItem) {
