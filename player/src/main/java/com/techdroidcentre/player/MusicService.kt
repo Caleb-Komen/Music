@@ -38,7 +38,7 @@ class MusicService: MediaLibraryService() {
         super.onCreate()
 
         serviceScope.launch {
-            songsRepository.getSongs()
+            songsRepository.fetchSongs()
         }
         player = ExoPlayer.Builder(this)
             .setAudioAttributes(

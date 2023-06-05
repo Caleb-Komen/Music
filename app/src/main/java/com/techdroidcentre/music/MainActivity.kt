@@ -55,8 +55,8 @@ class MainActivity : ComponentActivity() {
                     if (isPermissionGranted) {
                         val viewModel: MainViewModel = viewModel()
                         val state by viewModel.uiState.collectAsState()
-                        if (state.rootMediaItem != MediaItem.EMPTY) {
-                            MusicApp(rootMediaItem = state.rootMediaItem)
+                        if (state.rootChildren.isNotEmpty()) {
+                            MusicApp(rootChildren = state.rootChildren)
                         }
                     }
                 }

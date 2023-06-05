@@ -29,19 +29,25 @@ class MainViewModel @Inject constructor(
             rootFuture.addListener(
                 {
                     val rootItem = rootFuture.get().value!!
-                    _uiState.update {
-                        it.copy(rootMediaItem = rootItem)
-                    }
+                    fetchRootChildren(mediaBrowser, rootItem)
                 },
                 MoreExecutors.directExecutor()
             )
         }.launchIn(viewModelScope)
     }
 
-    fun setPermissionGranted(isGranted: Boolean) {
-        _uiState.update {
-            it.copy(isPermissionGranted = isGranted)
-        }
+    private fun fetchRootChildren(mediaBrowser: MediaBrowser, rootItem: MediaItem) {
+        val childrenFuture = mediaBrowser.getChildren(rootItem.mediaId, 0, Int.MAX_VALUE, null)
+        childrenFuture.addListener(
+            {
+                val result = childrenFuture.get()
+                val children = result.value!!
+                _uiState.update {
+                    it.copy(rootChildren = children)
+                }
+            },
+            MoreExecutors.directExecutor()
+        )
     }
 
     override fun onCleared() {
@@ -52,6 +58,5 @@ class MainViewModel @Inject constructor(
 }
 
 data class MainUiState(
-    val isPermissionGranted: Boolean = false,
-    val rootMediaItem: MediaItem = MediaItem.EMPTY
+    val rootChildren: List<MediaItem> = emptyList()
 )

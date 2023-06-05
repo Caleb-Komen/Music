@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,9 +38,9 @@ import com.techdroidcentre.common.getThumbnail
 
 @Composable
 fun SongsScreen(
-    rootMediaItem: MediaItem,
+    songsId: String,
     modifier: Modifier = Modifier,
-    viewModel: SongsViewModel = viewModel(factory = SongsViewModel.provideFactory(rootMediaItem))
+    viewModel: SongsViewModel = viewModel(factory = SongsViewModel.provideFactory(songsId))
 ) {
     val uiState by viewModel.uiState.collectAsState()
     SongsScreen(
@@ -61,8 +62,8 @@ fun SongsScreen(
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp)
+                .fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 24.dp)
         ) {
             item {
                 Text(

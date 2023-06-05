@@ -10,21 +10,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.media3.common.MediaItem
 import com.techdroidcentre.nowplaying.NowPlayingSheet
+import com.techdroidcentre.player.SONGS_ID
 import com.techdroidcentre.songs.SongsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MusicApp(
-    rootMediaItem: MediaItem,
+    rootChildren: List<MediaItem>,
     modifier: Modifier = Modifier
 ) {
     var nowPlayingSheetCollapsed by remember { mutableStateOf(true) }
+    val mediaItem = rootChildren.first { it.mediaId == SONGS_ID }
     NowPlayingSheet(
         onSheetCollapsed = { isCollapsed -> nowPlayingSheetCollapsed = isCollapsed },
         modifier = modifier
     ) { paddingValues ->
         SongsScreen(
-            rootMediaItem = rootMediaItem,
+            songsId = mediaItem.mediaId,
             modifier = Modifier.padding(paddingValues)
         )
     }

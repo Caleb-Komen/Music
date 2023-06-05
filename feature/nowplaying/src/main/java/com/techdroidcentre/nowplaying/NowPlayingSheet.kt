@@ -46,8 +46,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.common.getThumbnail
 
-val closedSheetHeight = 64.dp
-
 @ExperimentalMaterial3Api
 @Composable
 fun NowPlayingSheet(
@@ -61,13 +59,13 @@ fun NowPlayingSheet(
     var alphaValue by remember { mutableStateOf(1f) }
 
     BoxWithConstraints(modifier = modifier) {
-        val sheetPeekHeight = closedSheetHeight
-        val collapsedSheetHeight = with(LocalDensity.current) { sheetPeekHeight.toPx() }
+        val closedSheetHeight = 64.dp
+        val collapsedSheetHeight = with(LocalDensity.current) { closedSheetHeight.toPx() }
         val dragRange = constraints.maxHeight - collapsedSheetHeight
         BottomSheetScaffold(
             modifier = Modifier.fillMaxSize(),
             scaffoldState = scaffoldState,
-            sheetPeekHeight = sheetPeekHeight,
+            sheetPeekHeight = closedSheetHeight,
             sheetDragHandle = null,
             sheetShape = BottomSheetDefaults.HiddenShape,
             sheetContent = {

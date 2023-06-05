@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.update
 
 class SongsViewModel(
     private val musicServiceConnection: MusicServiceConnection,
-    rootMediaItem: MediaItem
+    songsId: String
 ): ViewModel() {
     private val _uiState = MutableStateFlow(SongsUiState())
     val uiState: StateFlow<SongsUiState> = _uiState
@@ -36,7 +36,7 @@ class SongsViewModel(
         musicServiceConnection.mediaBrowser.onEach { browser ->
             this.mediaBrowser = browser
             val mediaBrowser = this.mediaBrowser ?: return@onEach
-            fetchRootChildren(mediaBrowser, rootMediaItem)
+            fetchSongs(mediaBrowser, songsId)
         }.catch { throwable ->
             _uiState.update {
                 it.copy(
@@ -74,20 +74,8 @@ class SongsViewModel(
         }
     }
 
-    private fun fetchRootChildren(mediaBrowser: MediaBrowser, rootItem: MediaItem) {
-        val childrenFuture = mediaBrowser.getChildren(rootItem.mediaId, 0, Int.MAX_VALUE, null)
-        childrenFuture.addListener(
-            {
-                val result = childrenFuture.get()
-                val children = result.value!!
-                getSongs(mediaBrowser, children[0])
-            },
-            MoreExecutors.directExecutor()
-        )
-    }
-
-    private fun getSongs(mediaBrowser: MediaBrowser, mediaItem: MediaItem) {
-        val childrenFuture = mediaBrowser.getChildren(mediaItem.mediaId, 0, Int.MAX_VALUE, null)
+    private fun fetchSongs(mediaBrowser: MediaBrowser, songsId: String) {
+        val childrenFuture = mediaBrowser.getChildren(songsId, 0, Int.MAX_VALUE, null)
         childrenFuture.addListener(
             {
                 val result = childrenFuture.get()
@@ -110,10 +98,10 @@ class SongsViewModel(
     }
 
     companion object {
-        fun provideFactory(rootMediaItem: MediaItem) = viewModelFactory {
+        fun provideFactory(songsId: String) = viewModelFactory {
             initializer {
                 val context = (this[APPLICATION_KEY] as Context).applicationContext
-                SongsViewModel(MusicServiceConnection(context), rootMediaItem)
+                SongsViewModel(MusicServiceConnection(context), songsId)
             }
         }
     }

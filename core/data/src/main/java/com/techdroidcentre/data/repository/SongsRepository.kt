@@ -7,7 +7,7 @@ import com.techdroidcentre.data.model.Song
 import javax.inject.Inject
 
 interface SongsRepository {
-    suspend fun getSongs()
+    suspend fun fetchSongs()
 }
 
 class DefaultSongsRepository @Inject constructor(
@@ -27,7 +27,7 @@ class DefaultSongsRepository @Inject constructor(
         MediaStore.Audio.Media.TRACK,
         MediaStore.Audio.Media.DATA,
     )
-    override suspend fun getSongs() {
+    override suspend fun fetchSongs() {
         val songsList = mutableListOf<Song>()
         contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -57,7 +57,9 @@ class DefaultSongsRepository @Inject constructor(
                 val trackNumber = cursor.getInt(trackNumberColumn)
                 val path = cursor.getString(dataColumn)
                 val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString()
-                songsList += Song(id, uri, title, albumId, album, artistId, artist, duration, trackNumber, path)
+                val albumName = if (album == MediaStore.UNKNOWN_STRING) "Unknown Album" else album
+                val artistName = if (artist == MediaStore.UNKNOWN_STRING) "Unknown Artist" else artist
+                songsList += Song(id, uri, title, albumId, albumName, artistId, artistName, duration, trackNumber, path)
             }
         }
         songs = songsList

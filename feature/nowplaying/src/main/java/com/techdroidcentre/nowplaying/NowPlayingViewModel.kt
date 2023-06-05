@@ -41,7 +41,7 @@ class NowPlayingViewModel @Inject constructor(
 
 data class NowPlayingUiState(
     val isPlaying: Boolean = false,
-    val song: Song = Song()
+    val song: Song = Song(title = "Not Playing")
 )
 
 fun MediaItem.toSong(): Song {
