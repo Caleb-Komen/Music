@@ -18,13 +18,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,11 +49,11 @@ import com.techdroidcentre.common.getThumbnail
 @ExperimentalMaterial3Api
 @Composable
 fun NowPlayingSheet(
+    scaffoldState: BottomSheetScaffoldState,
     modifier: Modifier = Modifier,
     onSheetCollapsed: (Boolean) -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val scaffoldState = rememberBottomSheetScaffoldState()
     val viewModel: NowPlayingViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
     var alphaValue by remember { mutableStateOf(1f) }
