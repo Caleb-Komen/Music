@@ -36,7 +36,6 @@ class MainViewModel @Inject constructor(
                 MoreExecutors.directExecutor()
             )
         }.launchIn(viewModelScope)
-
     }
 
     fun setPermissionGranted(isGranted: Boolean) {
