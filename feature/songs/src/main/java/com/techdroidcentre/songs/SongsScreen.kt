@@ -1,11 +1,6 @@
 package com.techdroidcentre.songs
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
-import android.util.Size
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +33,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.MediaItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.common.getThumbnail
 
 @Composable
 fun SongsScreen(
@@ -142,15 +138,3 @@ fun SongItem(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.Q)
-fun getThumbnail(context: Context, artworkUri: String): Bitmap? {
-    return try {
-        context.contentResolver.loadThumbnail(
-            Uri.parse(artworkUri),
-            Size(300, 300),
-            null
-        )
-    } catch(e: Exception) {
-        null
-    }
-}

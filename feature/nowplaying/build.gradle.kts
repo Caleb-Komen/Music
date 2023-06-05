@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techdroidcentre.data"
+    namespace = "com.techdroidcentre.nowplaying"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -28,12 +28,34 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
 }
 
 dependencies {
+    val composeBom = platform(libs.androidx.compose.bom)
+
+    implementation(project(":core:common"))
+    implementation(project(":core:model"))
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(composeBom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+
+    implementation(libs.androidx.media3.session)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.coil.compose)
 }
 
 kapt {

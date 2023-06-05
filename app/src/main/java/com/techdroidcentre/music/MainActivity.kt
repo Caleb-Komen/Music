@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                     if (state.isPermissionGranted && state.rootMediaItem != MediaItem.EMPTY) {
-                        SongsScreen(state.rootMediaItem)
+                        MusicApp(rootMediaItem = state.rootMediaItem)
                     } else {
                         Text(text = "The app need read permission in order to fetch songs from device")
                     }

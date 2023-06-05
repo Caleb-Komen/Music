@@ -3,6 +3,7 @@ package com.techdroidcentre.common
 import android.content.ComponentName
 import android.content.Context
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -41,6 +42,7 @@ class MusicServiceConnection @Inject constructor(
                         mediaItem
                     }
                 }
+                browser.addListener(playerListener)
             },
             MoreExecutors.directExecutor()
         )
@@ -69,7 +71,20 @@ class MusicServiceConnection @Inject constructor(
         return ImmutableList.copyOf(items)
     }
 
+    private val playerListener = object: Player.Listener {
+        override fun onEvents(player: Player, events: Player.Events) {
+            if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {
+                mediaBrowser.value?.currentMediaItem?.let { mediaItem ->
+                    nowPlaying.update {
+                        mediaItem
+                    }
+                }
+            }
+        }
+    }
+
     fun releaseBrowser() {
+        mediaBrowser.value?.removeListener(playerListener)
         MediaBrowser.releaseFuture(browserFuture)
     }
 

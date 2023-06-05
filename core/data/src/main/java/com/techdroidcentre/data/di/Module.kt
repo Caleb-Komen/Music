@@ -1,4 +1,4 @@
-package com.techdroidcentre.data.repository.di
+package com.techdroidcentre.data.di
 
 import android.content.ContentResolver
 import android.content.Context

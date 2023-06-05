@@ -52,8 +52,9 @@ dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
 
     implementation(project(":core:common"))
-    implementation(project(":player"))
+    implementation(project(":feature:nowplaying"))
     implementation(project(":feature:songs"))
+    implementation(project(":player"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

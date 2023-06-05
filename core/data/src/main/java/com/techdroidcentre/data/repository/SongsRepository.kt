@@ -3,7 +3,7 @@ package com.techdroidcentre.data.repository
 import android.content.ContentResolver
 import android.content.ContentUris
 import android.provider.MediaStore
-import com.techdroidcentre.model.Song
+import com.techdroidcentre.data.model.Song
 import javax.inject.Inject
 
 interface SongsRepository {
