@@ -36,9 +36,10 @@ import com.techdroidcentre.model.Song
 
 @Composable
 fun NowPlayingScreen(
-    song: Song,
-    nextSong: () -> Unit,
-    previousSong: () -> Unit,
+    uiState: NowPlayingUiState,
+    playNextSong: () -> Unit,
+    playPreviousSong: () -> Unit,
+    playOrPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -46,18 +47,19 @@ fun NowPlayingScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PlaybackImage(
-            song = song,
+            song = uiState.song,
             modifier = Modifier.weight(1f)
         )
         Spacer(Modifier.height(16.dp))
-        PlaybackMetadata(song = song)
+        PlaybackMetadata(song = uiState.song)
         Spacer(Modifier.height(16.dp))
         PlaybackOptions()
         Spacer(Modifier.height(16.dp))
         PlaybackControls(
-            isPlaying = false,
-            nextSong = nextSong,
-            previousSong = previousSong,
+            isPlaying = uiState.isPlaying,
+            playNextSong = playNextSong,
+            playPreviousSong = playPreviousSong,
+            playOrPause = playOrPause,
             modifier = Modifier.weight(1f)
         )
     }
@@ -154,8 +156,9 @@ fun PlaybackOptions(
 @Composable
 fun PlaybackControls(
     isPlaying: Boolean,
-    nextSong: () -> Unit,
-    previousSong: () -> Unit,
+    playNextSong: () -> Unit,
+    playPreviousSong: () -> Unit,
+    playOrPause: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -186,7 +189,7 @@ fun PlaybackControls(
             modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(
-                onClick = previousSong
+                onClick = playPreviousSong
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_skip_previous_24),
@@ -195,7 +198,7 @@ fun PlaybackControls(
                 )
             }
             IconButton(
-                onClick = {}
+                onClick = playOrPause
             ) {
                 if (isPlaying) {
                     Icon(
@@ -212,7 +215,7 @@ fun PlaybackControls(
                 }
             }
             IconButton(
-                onClick = nextSong
+                onClick = playNextSong
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_skip_next_24),

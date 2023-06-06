@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NowPlayingViewModel @Inject constructor(
-    musicServiceConnection: MusicServiceConnection
+    private val musicServiceConnection: MusicServiceConnection
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NowPlayingUiState())
     val uiState: StateFlow<NowPlayingUiState> = _uiState
@@ -28,14 +28,30 @@ class NowPlayingViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+        musicServiceConnection.isPlaying.onEach { isPlaying ->
+            _uiState.update {
+                it.copy(isPlaying = isPlaying)
+            }
+        }.launchIn(viewModelScope)
     }
 
-    fun nextSong() {
-        // TODO: play next song
+    fun playOrPause() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        if (player.isPlaying) {
+            player.pause()
+        } else {
+            player.play()
+        }
     }
 
-    fun previousSong() {
-        // TODO: play previous song
+    fun playNextSong() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        player.seekToNextMediaItem()
+    }
+
+    fun playPreviousSong() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        player.seekToPreviousMediaItem()
     }
 }
 

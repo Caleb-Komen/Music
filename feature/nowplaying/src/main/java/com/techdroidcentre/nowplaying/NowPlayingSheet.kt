@@ -106,16 +106,23 @@ fun NowPlayingSheet(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        IconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Icons.Default.PlayArrow,
-                                contentDescription = null
-                            )
+                        IconButton(onClick = viewModel::playOrPause) {
+                            if (uiState.isPlaying) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.baseline_pause_24),
+                                    contentDescription = "pause"
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.PlayArrow,
+                                    contentDescription = "play"
+                                )
+                            }
                         }
-                        IconButton(onClick = viewModel::nextSong) {
+                        IconButton(onClick = viewModel::playNextSong) {
                             Icon(
                                 painter = painterResource(id = R.drawable.baseline_skip_next_24),
-                                contentDescription = null
+                                contentDescription = "skip to next"
                             )
                         }
                     }
@@ -128,9 +135,10 @@ fun NowPlayingSheet(
                     ) {
                         BottomSheetDefaults.DragHandle()
                         NowPlayingScreen(
-                            song = uiState.song,
-                            nextSong = viewModel::nextSong,
-                            previousSong = viewModel::previousSong
+                            uiState = uiState,
+                            playNextSong = viewModel::playNextSong,
+                            playPreviousSong = viewModel::playPreviousSong,
+                            playOrPause = viewModel::playOrPause
                         )
                     }
                 }

@@ -30,17 +30,14 @@ class MusicServiceConnection @Inject constructor(
 
     val nowPlaying: MutableStateFlow<MediaItem> = MutableStateFlow(MediaItem.EMPTY)
 
+    val isPlaying: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     init {
         browserFuture.addListener(
             {
                 val browser = browserFuture.get()
                 mediaBrowser.update {
                     browser
-                }
-                browser.currentMediaItem?.let { mediaItem ->
-                    nowPlaying.update {
-                        mediaItem
-                    }
                 }
                 browser.addListener(playerListener)
             },
@@ -78,6 +75,12 @@ class MusicServiceConnection @Inject constructor(
                     nowPlaying.update {
                         mediaItem
                     }
+                }
+            }
+
+            if (events.contains(Player.EVENT_IS_PLAYING_CHANGED)) {
+                isPlaying.update {
+                    player.isPlaying
                 }
             }
         }
