@@ -1,5 +1,7 @@
 package com.techdroidcentre.nowplaying
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
@@ -20,19 +22,53 @@ class NowPlayingViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(NowPlayingUiState())
     val uiState: StateFlow<NowPlayingUiState> = _uiState
 
+    private val handler = Handler(Looper.getMainLooper())
+
     init {
         musicServiceConnection.nowPlaying.onEach { mediaItem ->
             if (mediaItem != MediaItem.EMPTY) {
                 _uiState.update {
-                    it.copy(song = mediaItem.toSong())
+                    it.copy(
+                        song = mediaItem.toSong()
+                    )
                 }
             }
+        }.launchIn(viewModelScope)
+        musicServiceConnection.duration.onEach { duration ->
+            _uiState.update {
+                it.copy(
+                    duration = duration
+                )
+            }
+            updatePosition()
         }.launchIn(viewModelScope)
         musicServiceConnection.isPlaying.onEach { isPlaying ->
             _uiState.update {
                 it.copy(isPlaying = isPlaying)
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun updatePosition() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        handler.postDelayed(object: Runnable{
+            override fun run() {
+                if (player.currentPosition == player.duration) {
+                    _uiState.update {
+                        it.copy(
+                            position = 0L
+                        )
+                    }
+                    return
+                }
+                _uiState.update {
+                    it.copy(
+                        position = player.currentPosition
+                    )
+                }
+                handler.postDelayed(this, 100L)
+            }
+        }, 100L)
     }
 
     fun playOrPause() {
@@ -53,11 +89,18 @@ class NowPlayingViewModel @Inject constructor(
         val player = musicServiceConnection.mediaBrowser.value ?: return
         player.seekToPreviousMediaItem()
     }
+
+    fun seekTo(position: Long) {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        player.seekTo(position)
+    }
 }
 
 data class NowPlayingUiState(
     val isPlaying: Boolean = false,
-    val song: Song = Song(title = "Not Playing")
+    val song: Song = Song(title = "Not Playing"),
+    val duration: Long = 0L,
+    val position: Long = 0L
 )
 
 fun MediaItem.toSong(): Song {

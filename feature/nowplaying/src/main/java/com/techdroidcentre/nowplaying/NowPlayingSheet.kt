@@ -136,6 +136,7 @@ fun NowPlayingSheet(
                         BottomSheetDefaults.DragHandle()
                         NowPlayingScreen(
                             uiState = uiState,
+                            onPositionChange = { viewModel.seekTo(it.toLong()) },
                             playNextSong = viewModel::playNextSong,
                             playPreviousSong = viewModel::playPreviousSong,
                             playOrPause = viewModel::playOrPause

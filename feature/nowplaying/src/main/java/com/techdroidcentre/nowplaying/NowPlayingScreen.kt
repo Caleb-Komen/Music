@@ -33,10 +33,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.common.getThumbnail
 import com.techdroidcentre.model.Song
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun NowPlayingScreen(
     uiState: NowPlayingUiState,
+    onPositionChange: (Float) -> Unit,
     playNextSong: () -> Unit,
     playPreviousSong: () -> Unit,
     playOrPause: () -> Unit,
@@ -57,6 +59,9 @@ fun NowPlayingScreen(
         Spacer(Modifier.height(16.dp))
         PlaybackControls(
             isPlaying = uiState.isPlaying,
+            duration = uiState.duration,
+            position = uiState.position,
+            onPositionChange = onPositionChange,
             playNextSong = playNextSong,
             playPreviousSong = playPreviousSong,
             playOrPause = playOrPause,
@@ -156,6 +161,9 @@ fun PlaybackOptions(
 @Composable
 fun PlaybackControls(
     isPlaying: Boolean,
+    duration: Long,
+    position: Long,
+    onPositionChange: (Float) -> Unit,
     playNextSong: () -> Unit,
     playPreviousSong: () -> Unit,
     playOrPause: () -> Unit,
@@ -163,9 +171,9 @@ fun PlaybackControls(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Slider(
-            value = 0.5f,
-            onValueChange = {},
-            valueRange = 0f..1f
+            value = position.toFloat(),
+            onValueChange = onPositionChange,
+            valueRange = 0f..duration.toFloat()
         )
         Box(
             Modifier
@@ -173,11 +181,11 @@ fun PlaybackControls(
                 .padding(horizontal = 8.dp)
         ) {
             Text(
-                text = "2:00",
+                text = formatDuration(position),
                 modifier = Modifier.align(Alignment.TopStart)
             )
             Text(
-                text = "4:00",
+                text = formatDuration(duration),
                 modifier = Modifier.align(Alignment.TopEnd)
             )
 
@@ -225,4 +233,12 @@ fun PlaybackControls(
             }
         }
     }
+}
+
+fun formatDuration(duration: Long): String {
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(duration)
+    val totalSeconds = TimeUnit.MILLISECONDS.toSeconds(duration)
+    val seconds = TimeUnit.MINUTES.toSeconds(minutes)
+    val remainingSeconds = totalSeconds - seconds
+    return String.format("%02d:%02d", minutes, remainingSeconds)
 }
