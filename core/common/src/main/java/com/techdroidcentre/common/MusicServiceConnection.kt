@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
-import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
@@ -22,11 +21,7 @@ class MusicServiceConnection @Inject constructor(
 
     private val browserFuture = MediaBrowser.Builder(context, sessionToken).buildAsync()
 
-    private val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-
     val mediaBrowser: MutableStateFlow<MediaBrowser?> = MutableStateFlow(null)
-
-    val mediaController: MutableStateFlow<MediaController?> = MutableStateFlow(null)
 
     val nowPlaying: MutableStateFlow<MediaItem> = MutableStateFlow(MediaItem.EMPTY)
 
@@ -42,15 +37,6 @@ class MusicServiceConnection @Inject constructor(
                     browser
                 }
                 browser.addListener(playerListener)
-            },
-            MoreExecutors.directExecutor()
-        )
-        controllerFuture.addListener(
-            {
-                val controller = controllerFuture.get()
-                mediaController.update {
-                    controller
-                }
             },
             MoreExecutors.directExecutor()
         )
@@ -103,7 +89,4 @@ class MusicServiceConnection @Inject constructor(
         MediaBrowser.releaseFuture(browserFuture)
     }
 
-    fun releaseController() {
-        MediaController.releaseFuture(controllerFuture)
-    }
 }
