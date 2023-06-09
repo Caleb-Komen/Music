@@ -56,6 +56,8 @@ dependencies {
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.coil.compose)
+
+    implementation(libs.androidx.palette)
 }
 
 kapt {

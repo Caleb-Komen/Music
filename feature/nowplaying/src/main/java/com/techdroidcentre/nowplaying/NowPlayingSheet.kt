@@ -120,21 +120,28 @@ fun NowPlayingSheet(
                             )
                         }
                     }
-                    Column(
-                        modifier = Modifier
-                            .graphicsLayer {
-                                alpha = 1 - alphaValue
-                            },
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        BottomSheetDefaults.DragHandle()
-                        NowPlayingScreen(
-                            uiState = uiState,
-                            onPositionChange = { viewModel.seekTo(it.toLong()) },
-                            playNextSong = viewModel::playNextSong,
-                            playPreviousSong = viewModel::playPreviousSong,
-                            playOrPause = viewModel::playOrPause
-                        )
+                    NowPlayingDynamicTheme(artworkData = uiState.song.artworkData) {
+                        Column(
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    alpha = 1 - alphaValue
+                                }
+                                .verticalGradientScrim(
+                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.90f),
+                                    startYPercentage = 1f,
+                                    endYPercentage = 0f
+                                ),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            BottomSheetDefaults.DragHandle()
+                            NowPlayingScreen(
+                                uiState = uiState,
+                                onPositionChange = { viewModel.seekTo(it.toLong()) },
+                                playNextSong = viewModel::playNextSong,
+                                playPreviousSong = viewModel::playPreviousSong,
+                                playOrPause = viewModel::playOrPause
+                            )
+                        }
                     }
                 }
             }
