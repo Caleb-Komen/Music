@@ -1,6 +1,5 @@
 package com.techdroidcentre.nowplaying
 
-import android.os.Build
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +29,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.techdroidcentre.common.getThumbnail
 import com.techdroidcentre.model.Song
 import java.util.concurrent.TimeUnit
 
@@ -76,11 +74,7 @@ fun PlaybackImage(
 ) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    getThumbnail(LocalContext.current, song.artworkUri)
-                else song.artworkData
-            )
+            .data(song.artworkData)
             .crossfade(true)
             .build(),
         error = painterResource(androidx.media3.session.R.drawable.media3_icon_circular_play),

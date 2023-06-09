@@ -1,6 +1,5 @@
 package com.techdroidcentre.songs
 
-import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,10 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.common.MediaItem
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.techdroidcentre.common.getThumbnail
 
 @Composable
 fun SongsScreen(
@@ -104,11 +100,7 @@ fun SongItem(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                            getThumbnail(LocalContext.current, song.artworkUri)
-                        else song.artworkData
-                    )
+                    .data(song.artworkData)
                     .crossfade(true)
                     .build(),
                 error = painterResource(androidx.media3.session.R.drawable.media3_icon_circular_play),
