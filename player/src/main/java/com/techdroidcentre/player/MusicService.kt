@@ -10,6 +10,7 @@ import androidx.media3.session.MediaSession
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
+import com.techdroidcentre.data.repository.AlbumsRepository
 import com.techdroidcentre.data.repository.SongsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -26,8 +27,11 @@ class MusicService: MediaLibraryService() {
     @Inject
     lateinit var songsRepository: SongsRepository
 
+    @Inject
+    lateinit var albumsRepository: AlbumsRepository
+
     val mediaItemTree: MediaItemTree by lazy {
-        MediaItemTree(songsRepository)
+        MediaItemTree(songsRepository, albumsRepository)
     }
 
     private lateinit var player: ExoPlayer
@@ -39,6 +43,7 @@ class MusicService: MediaLibraryService() {
 
         serviceScope.launch {
             songsRepository.fetchSongs()
+            albumsRepository.fetchAlbums()
         }
         player = ExoPlayer.Builder(this)
             .setAudioAttributes(
