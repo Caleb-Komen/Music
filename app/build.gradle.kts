@@ -52,6 +52,7 @@ dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
 
     implementation(project(":core:common"))
+    implementation(project(":feature:albums"))
     implementation(project(":feature:nowplaying"))
     implementation(project(":feature:songs"))
     implementation(project(":player"))
