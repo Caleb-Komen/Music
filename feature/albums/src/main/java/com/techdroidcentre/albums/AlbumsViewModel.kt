@@ -1,7 +1,6 @@
 package com.techdroidcentre.albums
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -40,8 +39,6 @@ class AlbumsViewModel constructor(
                     loading = false
                 )
             }
-            Log.d("AlbumsViewModel", "Uri -> ${_uiState.value.albums[0].artworkUri}")
-            Log.d("AlbumsViewModel", "Uri -> content://media/external/audio/albumart/${_uiState.value.albums[0].id.toString()}")
         }.catch { throwable ->
             _uiState.update {
                 it.copy(
