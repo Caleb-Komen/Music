@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -61,17 +62,19 @@ fun AlbumsScreen(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.padding(24.dp)) {
+        Column {
             Text(
                 text = "Albums",
                 style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(128.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
+                contentPadding = PaddingValues(horizontal = 24.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(items = uiState.albums, key = { it.id }) { album ->
@@ -115,7 +118,7 @@ fun AlbumItem(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(shape = MaterialTheme.shapes.small),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
         Text(
             text = album.name,

@@ -93,7 +93,7 @@ fun PlaybackMetadata(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -166,7 +166,8 @@ fun PlaybackControls(
         Slider(
             value = position.toFloat(),
             onValueChange = onPositionChange,
-            valueRange = 0f..duration.toFloat()
+            valueRange = 0f..duration.toFloat(),
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
         Box(
             Modifier
