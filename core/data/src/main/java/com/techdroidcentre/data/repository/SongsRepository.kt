@@ -54,11 +54,12 @@ class DefaultSongsRepository @Inject constructor(
                 val artistId = cursor.getLong(artistIdColumn)
                 val artist = cursor.getString(artistColumn)
                 val duration = cursor.getLong(durationColumn)
-                val trackNumber = cursor.getInt(trackNumberColumn)
+                val track = cursor.getInt(trackNumberColumn)
                 val path = cursor.getString(dataColumn)
                 val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString()
                 val albumName = if (album == MediaStore.UNKNOWN_STRING) "Unknown Album" else album
                 val artistName = if (artist == MediaStore.UNKNOWN_STRING) "Unknown Artist" else artist
+                val trackNumber = if (track > 1000) track % 1000 else track
                 songsList += Song(id, uri, title, albumId, albumName, artistId, artistName, duration, trackNumber, path)
             }
         }

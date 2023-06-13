@@ -85,7 +85,7 @@ class DefaultAlbumsRepository @Inject constructor(
             projection,
             "${MediaStore.Audio.Media.IS_MUSIC} = ? AND ${MediaStore.Audio.Media.ALBUM_ID} = ?",
             arrayOf("1", "$albumId"),
-            null
+            MediaStore.Audio.Media.TRACK
         )?.use { cursor ->
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
             val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
