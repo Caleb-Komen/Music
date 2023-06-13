@@ -18,7 +18,7 @@ interface AlbumsRepository {
 class DefaultAlbumsRepository @Inject constructor(
     private val contentResolver: ContentResolver
 ): AlbumsRepository {
-    var songs = emptyList<Song>()
+    var albumSongs = mutableMapOf<String, List<Song>>()
         private set
     var albums = emptyList<Album>()
         private set
@@ -72,6 +72,9 @@ class DefaultAlbumsRepository @Inject constructor(
                 albumsList += Album(id, uri.toString(), name, artist, artworkUri.toString(), noOfSongs, year)
             }
         }
+        albumsList.forEach {
+            fetchSongsForAlbum(it.id)
+        }
         albums = albumsList
     }
 
@@ -80,7 +83,7 @@ class DefaultAlbumsRepository @Inject constructor(
         contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
-            "${MediaStore.Audio.Media.IS_MUSIC} = ? && ${MediaStore.Audio.Media.ALBUM_ID} = ?",
+            "${MediaStore.Audio.Media.IS_MUSIC} = ? AND ${MediaStore.Audio.Media.ALBUM_ID} = ?",
             arrayOf("1", "$albumId"),
             null
         )?.use { cursor ->
@@ -108,6 +111,6 @@ class DefaultAlbumsRepository @Inject constructor(
                 songsList += Song(id, uri, title, albumId, albumName, artistId, artistName, duration, trackNumber, path)
             }
         }
-        songs = songsList
+        albumSongs[albumId.toString()] = songsList
     }
 }

@@ -92,7 +92,11 @@ class MusicService: MediaLibraryService() {
             browser: MediaSession.ControllerInfo,
             mediaId: String
         ): ListenableFuture<LibraryResult<MediaItem>> {
-            return super.onGetItem(session, browser, mediaId)
+            val mediaItem = mediaItemTree.getMediaItem(mediaId)
+                ?: return Futures.immediateFuture(
+                LibraryResult.ofError(LibraryResult.RESULT_ERROR_BAD_VALUE)
+            )
+            return Futures.immediateFuture(LibraryResult.ofItem(mediaItem, null))
         }
 
         override fun onGetChildren(
