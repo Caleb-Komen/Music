@@ -56,6 +56,19 @@ class MusicServiceConnection @Inject constructor(
         return ImmutableList.copyOf(items)
     }
 
+    fun getMediaItem(mediaId: String): MediaItem {
+        val browser = mediaBrowser.value ?: return MediaItem.EMPTY
+        var item = MediaItem.EMPTY
+        val itemFuture = browser.getItem(mediaId)
+        itemFuture.addListener(
+            {
+                item = itemFuture.get().value ?: MediaItem.EMPTY
+            },
+            MoreExecutors.directExecutor()
+        )
+        return item
+    }
+
     private val playerListener = object: Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) {
             if (events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION)) {

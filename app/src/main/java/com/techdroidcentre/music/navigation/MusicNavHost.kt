@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.media3.common.MediaItem
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.techdroidcentre.albumdetails.navigation.albumDetailsScreen
+import com.techdroidcentre.albumdetails.navigation.navigateToAlbumDetails
 import com.techdroidcentre.albums.navigation.albumsScreen
 import com.techdroidcentre.player.ALBUMS_ID
 import com.techdroidcentre.player.SONGS_ID
@@ -25,7 +27,10 @@ fun MusicNavHost(
         songsScreen(songsId = rootChildren.first { it.mediaId == SONGS_ID }.mediaId)
         albumsScreen(
             albumsId = rootChildren.first { it.mediaId == ALBUMS_ID }.mediaId,
-            navigateToAlbumDetail = {}
+            navigateToAlbumDetail = { albumId ->
+                navController.navigateToAlbumDetails(albumId)
+            }
         )
+        albumDetailsScreen()
     }
 }

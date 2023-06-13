@@ -65,6 +65,14 @@ class MediaItemTree (songsRepository: SongsRepository, albumsRepository: AlbumsR
                 )
             )
             treeNode[ALBUMS_ID]!!.addChild(id)
+
+            val songs = albumsRepository.albumSongs[id] ?: emptyList()
+            songs.forEach { song ->
+                val item = treeNode[song.id.toString()]?.mediaItem
+                if (item != null){
+                    treeNode[id]!!.addChild(item.mediaId)
+                }
+            }
         }
     }
 
