@@ -1,6 +1,7 @@
 package com.techdroidcentre.music.navigation
 
 import com.techdroidcentre.albums.navigation.albumsNavigationRoute
+import com.techdroidcentre.artists.navigation.artistsNavigationRoute
 import com.techdroidcentre.music.R
 import com.techdroidcentre.songs.navigation.songsNavigationRoute
 
@@ -22,5 +23,12 @@ sealed class TopLevelDestination(
         unselectedIcon = R.drawable.music_album,
         iconText = "Albums",
         route = albumsNavigationRoute
+    )
+
+    object Artists: TopLevelDestination(
+        selectedIcon = R.drawable.account_music,
+        unselectedIcon = R.drawable.account_music_outline,
+        iconText = "Artists",
+        route = artistsNavigationRoute
     )
 }
