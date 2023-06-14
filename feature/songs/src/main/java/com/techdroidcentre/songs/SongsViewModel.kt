@@ -11,6 +11,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -31,9 +32,7 @@ class SongsViewModel(
         fetchSongs(songsId)
     }
 
-    fun playOrPause(
-        song: Song
-    ) {
+    fun playOrPause(song: Song) {
         val player = this.mediaBrowser ?: return
         val nowPlaying = musicServiceConnection.nowPlaying.value
         val isPrepared = player.playbackState != Player.STATE_IDLE

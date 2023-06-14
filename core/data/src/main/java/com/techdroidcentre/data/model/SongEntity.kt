@@ -1,6 +1,6 @@
 package com.techdroidcentre.data.model
 
-data class Song(
+data class SongEntity(
     val id: Long,
     val uri: String,
     val title: String,

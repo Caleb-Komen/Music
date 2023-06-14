@@ -1,12 +1,13 @@
-package com.techdroidcentre.songs
+package com.techdroidcentre.nowplaying
 
 import androidx.media3.common.MediaItem
 import com.techdroidcentre.model.Song
 
-data class SongsUiState(
-    val songs: List<Song> = emptyList(),
-    val error: String = "",
-    val loading: Boolean = false,
+data class NowPlayingUiState(
+    val isPlaying: Boolean = false,
+    val song: Song = Song(title = "Not Playing"),
+    val duration: Long = 0L,
+    val position: Long = 0L
 )
 
 fun MediaItem.toSong(): Song {

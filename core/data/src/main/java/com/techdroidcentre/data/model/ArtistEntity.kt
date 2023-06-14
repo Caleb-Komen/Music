@@ -1,6 +1,6 @@
 package com.techdroidcentre.data.model
 
-data class ArtistInfo(
+data class ArtistEntity(
     val id: Long,
     val uri: String,
     val name: String

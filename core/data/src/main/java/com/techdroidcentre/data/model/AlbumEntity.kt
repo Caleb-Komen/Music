@@ -1,6 +1,6 @@
 package com.techdroidcentre.data.model
 
-data class Album(
+data class AlbumEntity(
     val id: Long,
     val uri: String,
     val name: String,

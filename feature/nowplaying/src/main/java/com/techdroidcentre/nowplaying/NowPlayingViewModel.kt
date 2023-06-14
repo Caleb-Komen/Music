@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import com.techdroidcentre.common.MusicServiceConnection
-import com.techdroidcentre.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -94,24 +93,4 @@ class NowPlayingViewModel @Inject constructor(
         val player = musicServiceConnection.mediaBrowser.value ?: return
         player.seekTo(position)
     }
-}
-
-data class NowPlayingUiState(
-    val isPlaying: Boolean = false,
-    val song: Song = Song(title = "Not Playing"),
-    val duration: Long = 0L,
-    val position: Long = 0L
-)
-
-fun MediaItem.toSong(): Song {
-    return Song(
-        id = mediaId.toLong(),
-        uri = localConfiguration?.uri.toString(),
-        title = mediaMetadata.title.toString(),
-        album = mediaMetadata.albumTitle.toString(),
-        artist = mediaMetadata.artist.toString(),
-        trackNumber = mediaMetadata.trackNumber!!,
-        artworkUri = mediaMetadata.artworkUri.toString(),
-        artworkData = mediaMetadata.artworkData
-    )
 }
