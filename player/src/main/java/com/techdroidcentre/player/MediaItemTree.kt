@@ -6,16 +6,23 @@ import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import com.techdroidcentre.data.repository.AlbumsRepository
+import com.techdroidcentre.data.repository.ArtistsRepository
 import com.techdroidcentre.data.repository.DefaultAlbumsRepository
+import com.techdroidcentre.data.repository.DefaultArtistsRepository
 import com.techdroidcentre.data.repository.DefaultSongsRepository
 import com.techdroidcentre.data.repository.SongsRepository
 
 const val ROOT_ID = "ROOT_ID"
 const val SONGS_ID = "SONGS_ID"
 const val ALBUMS_ID = "ALBUMS_ID"
+const val ARTISTS_ID = "ARTISTS_ID"
 
 @OptIn(androidx.media3.common.util.UnstableApi::class)
-class MediaItemTree (songsRepository: SongsRepository, albumsRepository: AlbumsRepository) {
+class MediaItemTree(
+    songsRepository: SongsRepository,
+    albumsRepository: AlbumsRepository,
+    artistsRepository: ArtistsRepository
+) {
     private val treeNode = mutableMapOf<String, MediaItemNode>()
 
     init {
@@ -28,8 +35,12 @@ class MediaItemTree (songsRepository: SongsRepository, albumsRepository: AlbumsR
         treeNode[ALBUMS_ID] = MediaItemNode(
             buildMediaItem(ALBUMS_ID, isBrowsable = true, isPlayable = false)
         )
+        treeNode[ARTISTS_ID] = MediaItemNode(
+            buildMediaItem(ARTISTS_ID, isBrowsable = true, isPlayable = false)
+        )
         treeNode[ROOT_ID]!!.addChild(SONGS_ID)
         treeNode[ROOT_ID]!!.addChild(ALBUMS_ID)
+        treeNode[ROOT_ID]!!.addChild(ARTISTS_ID)
         (songsRepository as DefaultSongsRepository).songs.forEach { song ->
             val id = song.id.toString()
             treeNode[id] = MediaItemNode(
@@ -73,6 +84,20 @@ class MediaItemTree (songsRepository: SongsRepository, albumsRepository: AlbumsR
                     treeNode[id]!!.addChild(item.mediaId)
                 }
             }
+        }
+
+        (artistsRepository as DefaultArtistsRepository).artists.forEach { artist ->
+            val id = artist.id.toString()
+            treeNode[id] = MediaItemNode(
+                buildMediaItem(
+                    mediaId = id,
+                    uri = artist.uri,
+                    isBrowsable = true,
+                    isPlayable = false,
+                    title = artist.name
+                )
+            )
+            treeNode[ARTISTS_ID]!!.addChild(id)
         }
     }
 

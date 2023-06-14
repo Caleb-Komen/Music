@@ -25,13 +25,13 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.techdroidcentre.albums.navigation.albumsNavigationRoute
+import com.techdroidcentre.artists.navigation.artistsNavigationRoute
 import com.techdroidcentre.music.navigation.MusicNavHost
 import com.techdroidcentre.music.navigation.TopLevelDestination
 import com.techdroidcentre.music.navigation.TopLevelDestination.Albums
+import com.techdroidcentre.music.navigation.TopLevelDestination.Artists
 import com.techdroidcentre.music.navigation.TopLevelDestination.Songs
 import com.techdroidcentre.nowplaying.NowPlayingSheet
-import com.techdroidcentre.player.SONGS_ID
-import com.techdroidcentre.songs.SongsScreen
 import com.techdroidcentre.songs.navigation.songsNavigationRoute
 import kotlinx.coroutines.launch
 
@@ -45,10 +45,10 @@ fun MusicApp(
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
     var nowPlayingSheetCollapsed by remember { mutableStateOf(true) }
-    val destinations = listOf(Songs, Albums)
+    val destinations = listOf(Songs, Albums, Artists)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val bottomBarRoutes = listOf(songsNavigationRoute, albumsNavigationRoute)
+    val bottomBarRoutes = listOf(songsNavigationRoute, albumsNavigationRoute, artistsNavigationRoute)
     val shouldShowBottomBar = navBackStackEntry?.destination?.route in bottomBarRoutes
 
     Scaffold(

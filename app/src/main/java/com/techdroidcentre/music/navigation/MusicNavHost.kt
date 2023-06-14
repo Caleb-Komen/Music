@@ -8,7 +8,9 @@ import androidx.navigation.compose.NavHost
 import com.techdroidcentre.albumdetails.navigation.albumDetailsScreen
 import com.techdroidcentre.albumdetails.navigation.navigateToAlbumDetails
 import com.techdroidcentre.albums.navigation.albumsScreen
+import com.techdroidcentre.artists.navigation.artistsScreen
 import com.techdroidcentre.player.ALBUMS_ID
+import com.techdroidcentre.player.ARTISTS_ID
 import com.techdroidcentre.player.SONGS_ID
 import com.techdroidcentre.songs.navigation.songsNavigationRoute
 import com.techdroidcentre.songs.navigation.songsScreen
@@ -32,5 +34,6 @@ fun MusicNavHost(
             }
         )
         albumDetailsScreen()
+        artistsScreen(artistsId = rootChildren.first { it.mediaId == ARTISTS_ID }.mediaId)
     }
 }

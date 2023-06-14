@@ -3,7 +3,9 @@ package com.techdroidcentre.data.di
 import android.content.ContentResolver
 import android.content.Context
 import com.techdroidcentre.data.repository.AlbumsRepository
+import com.techdroidcentre.data.repository.ArtistsRepository
 import com.techdroidcentre.data.repository.DefaultAlbumsRepository
+import com.techdroidcentre.data.repository.DefaultArtistsRepository
 import com.techdroidcentre.data.repository.DefaultSongsRepository
 import com.techdroidcentre.data.repository.SongsRepository
 import dagger.Module
@@ -36,5 +38,13 @@ object DataModule {
         contentResolver: ContentResolver
     ): AlbumsRepository {
         return DefaultAlbumsRepository(contentResolver)
+    }
+
+    @Singleton
+    @Provides
+    fun provideArtistsRepository(
+        contentResolver: ContentResolver
+    ): ArtistsRepository {
+        return DefaultArtistsRepository(contentResolver)
     }
 }
