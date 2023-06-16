@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":feature:albumdetails"))
     implementation(project(":feature:albums"))
+    implementation(project(":feature:artistdetails"))
     implementation(project(":feature:artists"))
     implementation(project(":feature:nowplaying"))
     implementation(project(":feature:songs"))

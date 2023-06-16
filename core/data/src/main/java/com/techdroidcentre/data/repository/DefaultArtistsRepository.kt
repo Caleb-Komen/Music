@@ -11,7 +11,8 @@ class DefaultArtistsRepository @Inject constructor(
 ): ArtistsRepository {
     var artists = emptyList<ArtistEntity>()
         private set
-
+    var artistAlbums = mutableMapOf<String, List<String>>()
+        private set
     override suspend fun fetchArtists() {
         val artistsList = mutableListOf<ArtistEntity>()
         val projection = arrayOf(
@@ -36,6 +37,30 @@ class DefaultArtistsRepository @Inject constructor(
                 artistsList += ArtistEntity(id, uri.toString(), name)
             }
         }
+        artistsList.forEach { fetchArtistAlbums(it.id.toString()) }
         artists = artistsList
+    }
+
+    override suspend fun fetchArtistAlbums(artistId: String) {
+        val albumsIds = mutableListOf<String>()
+        val projection = arrayOf(
+            MediaStore.Audio.Albums._ID
+        )
+
+        contentResolver.query(
+            MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
+            projection,
+            "${MediaStore.Audio.Albums.ARTIST_ID} = ?",
+            arrayOf(artistId),
+            null
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Albums._ID)
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idColumn)
+                albumsIds += id.toString()
+            }
+            artistAlbums[artistId] = albumsIds
+        }
     }
 }
