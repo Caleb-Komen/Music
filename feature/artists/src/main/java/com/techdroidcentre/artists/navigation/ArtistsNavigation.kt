@@ -6,8 +6,8 @@ import com.techdroidcentre.artists.ArtistsScreen
 
 const val artistsNavigationRoute = "artists"
 
-fun NavGraphBuilder.artistsScreen(artistsId: String) {
+fun NavGraphBuilder.artistsScreen(artistsId: String, navigateToArtistDetails: (String) -> Unit,) {
     composable(artistsNavigationRoute) {
-        ArtistsScreen(artistsId = artistsId)
+        ArtistsScreen(artistsId = artistsId, navigateToArtistDetails = navigateToArtistDetails)
     }
 }

@@ -1,6 +1,7 @@
 package com.techdroidcentre.artists
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,16 +35,22 @@ import com.techdroidcentre.model.Artist
 @Composable
 fun ArtistsScreen(
     artistsId: String,
+    navigateToArtistDetails: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArtistsViewModel = viewModel(factory = ArtistsViewModel.provideFactory(artistsId))
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    ArtistsScreen(uiState = uiState, modifier = modifier)
+    ArtistsScreen(
+        uiState = uiState,
+        navigateToArtistDetails = navigateToArtistDetails,
+        modifier = modifier
+    )
 }
 
 @Composable
 fun ArtistsScreen(
     uiState: ArtistsUiState,
+    navigateToArtistDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -62,7 +69,7 @@ fun ArtistsScreen(
                 contentPadding = PaddingValues(horizontal = 24.dp)
             ) {
                 items(items = uiState.artists, key = { it.id }) { artist ->
-                    ArtistItem(artist = artist)
+                    ArtistItem(artist = artist, navigateToArtistDetails = navigateToArtistDetails)
                 }
             }
         }
@@ -81,9 +88,10 @@ fun ArtistsScreen(
 @Composable
 fun ArtistItem(
     artist: Artist,
+    navigateToArtistDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.clickable { navigateToArtistDetails(artist.id.toString()) }) {
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically

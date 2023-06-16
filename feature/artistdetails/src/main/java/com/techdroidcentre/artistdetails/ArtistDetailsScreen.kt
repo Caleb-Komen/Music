@@ -1,11 +1,10 @@
-package com.techdroidcentre.albums
+package com.techdroidcentre.artistdetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,49 +30,49 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.session.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.model.Album
 
 @Composable
-fun AlbumsScreen(
-    albumsId: String,
+fun ArtistDetailsScreen(
     navigateToAlbumDetails: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: AlbumsViewModel = viewModel(factory = AlbumsViewModel.provideFactory(albumsId))
+    viewModel: ArtistDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    AlbumsScreen(
+    ArtistDetailsScreen(
         uiState = uiState,
-        navigateToAlbumDetails = navigateToAlbumDetails,
-        modifier = modifier
+        modifier = modifier,
+        navigateToAlbumDetails = navigateToAlbumDetails
     )
 }
 
 @Composable
-fun AlbumsScreen(
-    uiState: AlbumsUiState,
+fun ArtistDetailsScreen(
+    uiState: ArtistDetailsUiState,
     navigateToAlbumDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-    ) {
-        Column {
+    ){
+        Column(modifier = modifier.padding(24.dp)) {
             Text(
-                text = "Albums",
+                text = uiState.artist,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 24.dp)
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(128.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
-                contentPadding = PaddingValues(horizontal = 24.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(items = uiState.albums, key = { it.id }) { album ->
