@@ -91,7 +91,7 @@ fun ArtistItem(
     navigateToArtistDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.clickable { navigateToArtistDetails(artist.id.toString()) }) {
+    Column(modifier = modifier.clickable { navigateToArtistDetails(artist.id) }) {
         Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically

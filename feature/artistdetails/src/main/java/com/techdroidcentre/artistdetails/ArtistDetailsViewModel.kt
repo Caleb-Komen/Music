@@ -42,7 +42,7 @@ class ArtistDetailsViewModel @Inject constructor(
                     loading = false
                 )
             }
-        }/*.catch { throwable ->
+        }.catch { throwable ->
             _uiState.update {
                 it.copy(
                     artist = "",
@@ -51,6 +51,6 @@ class ArtistDetailsViewModel @Inject constructor(
                     loading = false
                 )
             }
-        }*/.launchIn(viewModelScope)
+        }.launchIn(viewModelScope)
     }
 }

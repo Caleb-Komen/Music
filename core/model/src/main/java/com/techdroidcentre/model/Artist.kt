@@ -1,7 +1,7 @@
 package com.techdroidcentre.model
 
 data class Artist(
-    val id: Long,
+    val id: String,
     val uri: String,
     val name: String
 )

@@ -11,7 +11,7 @@ data class ArtistsUiState(
 
 fun MediaItem.toArtist(): Artist {
     return Artist(
-        id = mediaId.toLong(),
+        id = mediaId,
         uri = localConfiguration?.uri.toString(),
         name = mediaMetadata.title.toString()
     )

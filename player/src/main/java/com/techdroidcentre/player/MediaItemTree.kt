@@ -87,7 +87,11 @@ class MediaItemTree(
         }
 
         (artistsRepository as DefaultArtistsRepository).artists.forEach { artist ->
-            val id = artist.id.toString()
+            // For some reasons there a bug when fetching artist albums in some API level e.g 24.
+            // So prepend artist id with 'artist-' to avoid the bug.
+            // The issue might be because some artist id and album id are the same(Not sure) which
+            // result in incorrect data being fetched.
+            val id = "artist-${artist.id}"
             treeNode[id] = MediaItemNode(
                 buildMediaItem(
                     mediaId = id,
@@ -99,7 +103,7 @@ class MediaItemTree(
             )
             treeNode[ARTISTS_ID]!!.addChild(id)
 
-            val albumsIds = artistsRepository.artistAlbums[id] ?: emptyList()
+            val albumsIds = artistsRepository.artistAlbums[artist.id.toString()] ?: emptyList()
             albumsIds.forEach { albumId ->
                 val item = treeNode[albumId]?.mediaItem
                 if (item != null) {

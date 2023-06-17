@@ -32,8 +32,9 @@ class DefaultArtistsRepository @Inject constructor(
 
             while (cursor.moveToNext()) {
                 val id = cursor.getLong(idColumn)
-                val name = cursor.getString(artistColumn)
+                val artistName = cursor.getString(artistColumn)
                 val uri = ContentUris.withAppendedId(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, id)
+                val name = if (artistName == MediaStore.UNKNOWN_STRING) "Unknown Artist" else artistName
                 artistsList += ArtistEntity(id, uri.toString(), name)
             }
         }
@@ -42,6 +43,8 @@ class DefaultArtistsRepository @Inject constructor(
     }
 
     override suspend fun fetchArtistAlbums(artistId: String) {
+        if (artistId.toLong() == -1L) return
+
         val albumsIds = mutableListOf<String>()
         val projection = arrayOf(
             MediaStore.Audio.Albums._ID
