@@ -78,14 +78,13 @@ fun MusicApp(
                 navController = navController,
                 modifier = Modifier.padding(paddingValues)
             )
-        }
-    }
-
-    BackHandler(scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
-        scope.launch {
-            scaffoldState.bottomSheetState.partialExpand()
-        }.invokeOnCompletion {
-            nowPlayingSheetCollapsed = true
+            BackHandler(scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
+                scope.launch {
+                    scaffoldState.bottomSheetState.partialExpand()
+                }.invokeOnCompletion {
+                    nowPlayingSheetCollapsed = true
+                }
+            }
         }
     }
 }
