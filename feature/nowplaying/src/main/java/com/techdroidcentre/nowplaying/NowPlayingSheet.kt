@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.icon.MusicIcons
 
 @ExperimentalMaterial3Api
 @Composable
@@ -85,10 +86,10 @@ fun NowPlayingSheet(
                                 .data(uiState.song.artworkData)
                                 .crossfade(true)
                                 .build(),
-                            error = painterResource(androidx.media3.session.R.drawable.media3_icon_circular_play),
+                            error = painterResource(MusicIcons.defaultMusicNote),
                             contentDescription = null,
                             modifier = Modifier
-                                .sizeIn(maxWidth = 56.dp, maxHeight = 56.dp)
+                                .size(56.dp)
                                 .clip(MaterialTheme.shapes.medium),
                             contentScale = ContentScale.Crop
                         )

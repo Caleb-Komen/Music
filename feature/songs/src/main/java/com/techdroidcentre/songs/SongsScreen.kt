@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.model.Song
 
 @Composable
@@ -104,7 +105,7 @@ fun SongItem(
                     .data(song.artworkData)
                     .crossfade(true)
                     .build(),
-                error = painterResource(androidx.media3.session.R.drawable.media3_icon_circular_play),
+                error = painterResource(MusicIcons.defaultMusicNote),
                 contentDescription = null,
                 modifier = Modifier
                     .size(56.dp)
