@@ -159,7 +159,7 @@ fun NowPlayingSheet(
                 }.coerceIn(0f, 1f)
                 alphaValue = fraction
 
-                onSheetCollapsed(scaffoldState.bottomSheetState.currentValue == SheetValue.PartiallyExpanded)
+                onSheetCollapsed(scaffoldState.bottomSheetState.targetValue == SheetValue.PartiallyExpanded)
 
                 content(it)
             }
