@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AlbumDetailsViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AlbumDetailsUiState())
     val uiState: StateFlow<AlbumDetailsUiState> = _uiState
@@ -49,12 +49,14 @@ class AlbumDetailsViewModel @Inject constructor(
         val player = musicServiceConnection.mediaBrowser.value ?: return
 
         val isPrepared = player.playbackState != Player.STATE_IDLE
-        if (isPrepared) {
+        val playlistId = savedStateHandle.get<String>(PLAYLIST_ID)
+        if (isPrepared && playlistId == checkNotNull(albumDetailArgs.albumId)) {
             when {
                 !player.isPlaying -> player.play()
                 player.playbackState == Player.STATE_ENDED -> player.seekTo(C.TIME_UNSET)
             }
         } else {
+            savedStateHandle[PLAYLIST_ID] = checkNotNull(albumDetailArgs.albumId)
             val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren(checkNotNull(albumDetailArgs.albumId))
                 .toMutableList()
             player.setMediaItems(playlist, 0, C.TIME_UNSET)
@@ -87,5 +89,9 @@ class AlbumDetailsViewModel @Inject constructor(
             player.prepare()
             player.play()
         }
+    }
+
+    companion object {
+        const val PLAYLIST_ID = "playlistId"
     }
 }
