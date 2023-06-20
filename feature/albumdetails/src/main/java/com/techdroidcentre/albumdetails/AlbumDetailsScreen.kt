@@ -33,9 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.media3.session.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.model.Song
 
 @Composable
@@ -90,7 +90,7 @@ fun AlbumInfo(
                     .data(uiState.album.artworkUri)
                     .crossfade(true)
                     .build(),
-                error = painterResource(R.drawable.media3_icon_circular_play),
+                error = painterResource(MusicIcons.musicRecord),
                 contentDescription = null,
                 modifier = Modifier
                     .size(172.dp)

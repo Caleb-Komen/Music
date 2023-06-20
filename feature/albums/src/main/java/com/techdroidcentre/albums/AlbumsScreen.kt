@@ -32,9 +32,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.session.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.icon.MusicIcons
 
 @Composable
 fun AlbumsScreen(
@@ -111,7 +111,7 @@ fun AlbumItem(
                 .data(album.artworkUri)
                 .crossfade(true)
                 .build(),
-            error = painterResource(R.drawable.media3_icon_circular_play),
+            error = painterResource(MusicIcons.musicRecord),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
