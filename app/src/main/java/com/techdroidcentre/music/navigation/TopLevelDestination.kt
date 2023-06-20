@@ -20,7 +20,7 @@ sealed class TopLevelDestination(
 
     object Albums: TopLevelDestination(
         selectedIcon = R.drawable.music_album,
-        unselectedIcon = R.drawable.music_album,
+        unselectedIcon = R.drawable.music_album_outline,
         iconText = "Albums",
         route = albumsNavigationRoute
     )
