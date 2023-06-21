@@ -1,5 +1,6 @@
 package com.techdroidcentre.albumdetails
 
+import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.techdroidcentre.albumdetails.navigation.AlbumDetailsArgs
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.player.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -66,7 +68,13 @@ class AlbumDetailsViewModel @Inject constructor(
     }
 
     fun shuffle() {
-        // TODO
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren(checkNotNull(albumDetailArgs.albumId))
+            .toMutableList()
+        player.setMediaItems(playlist)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
+        player.prepare()
+        player.play()
     }
 
     fun playOrPause(id: String) {
