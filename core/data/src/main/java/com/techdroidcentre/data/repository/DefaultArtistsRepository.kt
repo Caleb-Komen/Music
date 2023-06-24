@@ -39,6 +39,7 @@ class DefaultArtistsRepository @Inject constructor(
             }
         }
         artistsList.forEach { fetchArtistAlbums(it.id.toString()) }
+        artistsList.removeIf { artistAlbums[it.id.toString()]?.isEmpty() == true }
         artists = artistsList
     }
 
