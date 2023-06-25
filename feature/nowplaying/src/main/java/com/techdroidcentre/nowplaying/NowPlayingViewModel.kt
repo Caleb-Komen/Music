@@ -76,6 +76,13 @@ class NowPlayingViewModel @Inject constructor(
         if (player.isPlaying) {
             player.pause()
         } else {
+            // When player's state is Player.STATE_ENDED, call Player.seekTo to play the last
+            // media item before the player transitioned to Player.STATE_ENDED.
+            if (player.playbackState == Player.STATE_ENDED) {
+                player.seekTo(0)
+                updatePosition()
+                return
+            }
             player.play()
         }
     }
