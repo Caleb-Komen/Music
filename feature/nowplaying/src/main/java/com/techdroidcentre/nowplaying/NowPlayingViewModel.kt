@@ -5,6 +5,7 @@ import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import com.techdroidcentre.common.MusicServiceConnection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,6 +92,12 @@ class NowPlayingViewModel @Inject constructor(
 
     fun seekTo(position: Long) {
         val player = musicServiceConnection.mediaBrowser.value ?: return
+        // When player's state is Player.STATE_ENDED, set playWhenReady to false to prevent
+        // the player from playing immediately.
+        if (player.playbackState == Player.STATE_ENDED) {
+            player.playWhenReady = false
+            updatePosition()
+        }
         player.seekTo(position)
     }
 }
