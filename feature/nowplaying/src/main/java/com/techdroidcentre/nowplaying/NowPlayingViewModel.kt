@@ -4,9 +4,11 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +34,7 @@ class NowPlayingViewModel @Inject constructor(
                         song = mediaItem.toSong()
                     )
                 }
+                fetchPlaylistItems()
             }
         }.launchIn(viewModelScope)
         musicServiceConnection.duration.onEach { duration ->
@@ -71,6 +74,31 @@ class NowPlayingViewModel @Inject constructor(
         }, 100L)
     }
 
+    fun play(id: String) {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val nowPlaying = musicServiceConnection.nowPlaying.value
+        val isPrepared = player.playbackState != Player.STATE_IDLE
+        val playlist = getPlaylistItems()
+        if (isPrepared && id == nowPlaying.mediaId) {
+            when {
+                player.isPlaying -> player.pause()
+                player.playbackState == Player.STATE_ENDED -> player.seekTo(C.TIME_UNSET)
+                else -> player.play()
+            }
+
+        } else if (isPrepared) {
+            val mediaItem = playlist.first { it.mediaId == id }
+            player.seekTo(playlist.indexOf(mediaItem), C.TIME_UNSET)
+            if (!player.isPlaying) player.play()
+        } else {
+            val mediaItem = playlist.first { it.mediaId == id }
+            val startIndex = playlist.indexOf(mediaItem)
+            player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
+            player.prepare()
+            player.play()
+        }
+    }
+
     fun playOrPause() {
         val player = musicServiceConnection.mediaBrowser.value ?: return
         if (player.isPlaying) {
@@ -106,5 +134,29 @@ class NowPlayingViewModel @Inject constructor(
             updatePosition()
         }
         player.seekTo(position)
+    }
+
+    fun togglePlaylistItems() {
+        _uiState.update {
+            it.copy(showPlaylistItems = !it.showPlaylistItems)
+        }
+    }
+
+    private fun fetchPlaylistItems() {
+        val playlist = getPlaylistItems()
+        _uiState.update {
+            it.copy(playlistItems = playlist.map { mediaItem -> mediaItem.toSong() })
+        }
+    }
+
+    private fun getPlaylistItems(): List<MediaItem> {
+        val player = musicServiceConnection.mediaBrowser.value ?: return emptyList()
+        val playlist: MutableList<MediaItem> = mutableListOf()
+        var windowIndex = player.currentTimeline.getFirstWindowIndex(player.shuffleModeEnabled)
+        for (index in 0 until player.currentTimeline.windowCount) {
+            playlist.add(player.getMediaItemAt(windowIndex))
+            windowIndex = player.currentTimeline.getNextWindowIndex(windowIndex, player.repeatMode, player.shuffleModeEnabled)
+        }
+        return playlist
     }
 }

@@ -140,7 +140,9 @@ fun NowPlayingSheet(
                                 onPositionChange = { viewModel.seekTo(it.toLong()) },
                                 playNextSong = viewModel::playNextSong,
                                 playPreviousSong = viewModel::playPreviousSong,
-                                playOrPause = viewModel::playOrPause
+                                playOrPause = viewModel::playOrPause,
+                                play = viewModel::play,
+                                togglePlaylistItems = viewModel::togglePlaylistItems
                             )
                         }
                     }
