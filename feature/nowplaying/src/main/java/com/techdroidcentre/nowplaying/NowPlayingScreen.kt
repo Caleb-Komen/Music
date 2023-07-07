@@ -24,6 +24,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,29 +42,42 @@ fun NowPlayingScreen(
     playNextSong: () -> Unit,
     playPreviousSong: () -> Unit,
     playOrPause: () -> Unit,
+    play: (String) -> Unit,
+    togglePlaylistItems: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PlaybackImage(
-            song = uiState.song,
-            modifier = Modifier.weight(1f)
-        )
-        Spacer(Modifier.height(16.dp))
-        PlaybackMetadata(song = uiState.song)
-        Spacer(Modifier.height(16.dp))
-        PlaybackOptions()
+        if (uiState.showPlaylistItems) {
+            PlaylistItems(
+                songs = uiState.playlistItems,
+                nowPlaying = uiState.song,
+                play = play,
+                modifier = Modifier.weight(2f)
+            )
+        } else {
+            PlaybackImage(
+                song = uiState.song,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(Modifier.height(16.dp))
+            PlaybackMetadata(song = uiState.song)
+            Spacer(Modifier.height(16.dp))
+            PlaybackOptions()
+        }
         Spacer(Modifier.height(16.dp))
         PlaybackControls(
             isPlaying = uiState.isPlaying,
             duration = uiState.duration,
             position = uiState.position,
+            showPlaylistItems = uiState.showPlaylistItems,
             onPositionChange = onPositionChange,
             playNextSong = playNextSong,
             playPreviousSong = playPreviousSong,
             playOrPause = playOrPause,
+            togglePlaylistItems = togglePlaylistItems,
             modifier = Modifier.weight(1f)
         )
     }
@@ -94,7 +109,9 @@ fun PlaybackMetadata(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -157,13 +174,15 @@ fun PlaybackControls(
     isPlaying: Boolean,
     duration: Long,
     position: Long,
+    showPlaylistItems: Boolean,
     onPositionChange: (Float) -> Unit,
     playNextSong: () -> Unit,
     playPreviousSong: () -> Unit,
     playOrPause: () -> Unit,
+    togglePlaylistItems: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Bottom) {
         Slider(
             value = position.toFloat(),
             onValueChange = onPositionChange,
@@ -225,6 +244,29 @@ fun PlaybackControls(
                     contentDescription = "skip to next",
                     modifier = Modifier.size(48.dp)
                 )
+            }
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = togglePlaylistItems,
+                modifier = Modifier.size(48.dp)
+                    .semantics(true){ contentDescription = "Toggle playlist items" }
+            ) {
+                if (showPlaylistItems) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.list_box),
+                        contentDescription = null
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.list_box_outline),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
