@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -75,7 +77,8 @@ fun MusicApp(
                 )
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        contentWindowInsets = WindowInsets.navigationBars
     ) {
         NowPlayingSheet(
             scaffoldState = scaffoldState,

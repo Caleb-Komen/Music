@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -63,7 +64,8 @@ fun AlbumDetailsScreen(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .statusBarsPadding(),
         contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
     ) {
         item { AlbumInfo(uiState = uiState) }
