@@ -31,6 +31,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:model"))
     implementation(project(":player"))
 
     implementation(libs.androidx.media3.session)

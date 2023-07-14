@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.designsystem.icon.MusicIcons
+import com.techdroidcentre.model.Album
 
 @Composable
 fun AlbumsScreen(

@@ -9,6 +9,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.techdroidcentre.albumdetails.navigation.AlbumDetailsArgs
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.common.toAlbum
+import com.techdroidcentre.common.toSong
 import com.techdroidcentre.player.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

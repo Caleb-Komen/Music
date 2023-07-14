@@ -11,6 +11,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.common.toSong
 import com.techdroidcentre.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

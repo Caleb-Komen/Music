@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.techdroidcentre.artistdetails.navigation.ArtistDetailsArg
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.common.toAlbum
+import com.techdroidcentre.common.toArtist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
