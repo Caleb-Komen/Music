@@ -19,13 +19,13 @@ fun NavController.navigateToAlbumDetails(albumId: String) {
     navigate("$albumDetailsNavigationRoute/$albumId")
 }
 
-fun NavGraphBuilder.albumDetailsScreen() {
+fun NavGraphBuilder.albumDetailsScreen(onBackPress: () -> Unit) {
     composable(
         route = "$albumDetailsNavigationRoute/{$albumIdArg}",
         arguments = listOf(
             navArgument(albumIdArg) { type = NavType.StringType }
         )
     ) {
-        AlbumDetailsScreen()
+        AlbumDetailsScreen(onBackPress = onBackPress)
     }
 }

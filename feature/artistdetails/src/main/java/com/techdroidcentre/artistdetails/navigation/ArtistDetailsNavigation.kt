@@ -19,13 +19,19 @@ fun NavController.navigateToArtistDetails(artistId: String) {
     navigate("$artistDetailNavigationRoute/$artistId")
 }
 
-fun NavGraphBuilder.artistDetailsScreen(navigateToAlbumDetails: (String) -> Unit) {
+fun NavGraphBuilder.artistDetailsScreen(
+    navigateToAlbumDetails: (String) -> Unit,
+    onBackPress: () -> Unit
+) {
     composable(
         route = "$artistDetailNavigationRoute/{$artistIdArg}",
         arguments = listOf(
             navArgument(artistIdArg){ type = NavType.StringType }
         )
     ) {
-        ArtistDetailsScreen(navigateToAlbumDetails = navigateToAlbumDetails)
+        ArtistDetailsScreen(
+            navigateToAlbumDetails = navigateToAlbumDetails,
+            onBackPress = onBackPress
+        )
     }
 }

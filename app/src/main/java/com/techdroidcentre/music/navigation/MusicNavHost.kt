@@ -35,7 +35,7 @@ fun MusicNavHost(
                 navController.navigateToAlbumDetails(albumId)
             }
         )
-        albumDetailsScreen()
+        albumDetailsScreen(onBackPress = { navController.popBackStack() })
         artistsScreen(
             artistsId = rootChildren.first { it.mediaId == ARTISTS_ID }.mediaId,
             navigateToArtistDetails = { artistId ->
@@ -45,7 +45,8 @@ fun MusicNavHost(
         artistDetailsScreen(
             navigateToAlbumDetails = { albumId ->
                 navController.navigateToAlbumDetails(albumId)
-            }
+            },
+            onBackPress = { navController.popBackStack() }
         )
     }
 }

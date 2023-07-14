@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +17,11 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +46,7 @@ import com.techdroidcentre.model.Album
 @Composable
 fun ArtistDetailsScreen(
     navigateToAlbumDetails: (String) -> Unit,
+    onBackPress: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArtistDetailsViewModel = hiltViewModel()
 ) {
@@ -48,7 +54,8 @@ fun ArtistDetailsScreen(
     ArtistDetailsScreen(
         uiState = uiState,
         modifier = modifier,
-        navigateToAlbumDetails = navigateToAlbumDetails
+        navigateToAlbumDetails = navigateToAlbumDetails,
+        onBackPress = onBackPress
     )
 }
 
@@ -56,21 +63,34 @@ fun ArtistDetailsScreen(
 fun ArtistDetailsScreen(
     uiState: ArtistDetailsUiState,
     navigateToAlbumDetails: (String) -> Unit,
+    onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize().statusBarsPadding(),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ){
         Column {
-            Text(
-                text = uiState.artist,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(horizontal = 24.dp)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onBackPress) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Navigate back"
+                    )
+                }
+                Text(
+                    text = uiState.artist,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(128.dp),

@@ -16,8 +16,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +45,7 @@ import com.techdroidcentre.model.Song
 
 @Composable
 fun AlbumDetailsScreen(
+    onBackPress: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AlbumDetailsViewModel = hiltViewModel()
 ) {
@@ -50,6 +55,7 @@ fun AlbumDetailsScreen(
         playOrPause = viewModel::playOrPause,
         play = viewModel::play,
         shuffle = viewModel::shuffle,
+        onBackPress = onBackPress,
         modifier = modifier
     )
 }
@@ -60,19 +66,32 @@ fun AlbumDetailsScreen(
     playOrPause: (String) -> Unit,
     play: () -> Unit,
     shuffle: () -> Unit,
+    onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
-    ) {
-        item { AlbumInfo(uiState = uiState) }
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-        item { AlbumMediaControls(play = play, shuffle = shuffle) }
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-        albumSongsCollection(uiState = uiState, playOrPause = playOrPause)
+    Column(modifier = modifier.statusBarsPadding()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = onBackPress) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Navigate back"
+                )
+            }
+        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
+        ) {
+            item { AlbumInfo(uiState = uiState) }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            item { AlbumMediaControls(play = play, shuffle = shuffle) }
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+            albumSongsCollection(uiState = uiState, playOrPause = playOrPause)
+        }
     }
 }
 
