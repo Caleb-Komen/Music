@@ -63,7 +63,8 @@ class AlbumDetailsViewModel @Inject constructor(
             savedStateHandle[PLAYLIST_ID] = checkNotNull(albumDetailArgs.albumId)
             val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren(checkNotNull(albumDetailArgs.albumId))
                 .toMutableList()
-            player.setMediaItems(playlist, 0, C.TIME_UNSET)
+            player.setMediaItems(playlist)
+            player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
             player.prepare()
             player.play()
         }

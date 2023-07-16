@@ -86,6 +86,7 @@ class MusicService: MediaLibraryService() {
             val connectionResult = super.onConnect(session, controller)
             val availableSessionCommands = connectionResult.availableSessionCommands.buildUpon()
             availableSessionCommands.add(COMMAND_SHUFFLE_MODE_ON)
+            availableSessionCommands.add(COMMAND_SHUFFLE_MODE_OFF)
             return MediaSession.ConnectionResult.accept(
                 availableSessionCommands.build(),
                 connectionResult.availablePlayerCommands
@@ -100,6 +101,7 @@ class MusicService: MediaLibraryService() {
         ): ListenableFuture<SessionResult> {
             when (customCommand.customAction) {
                 SHUFFLE_MODE_ON -> player.shuffleModeEnabled = true
+                SHUFFLE_MODE_OFF -> player.shuffleModeEnabled = false
             }
             return Futures.immediateFuture(SessionResult(RESULT_SUCCESS))
         }
@@ -170,7 +172,9 @@ class MusicService: MediaLibraryService() {
 
     companion object {
         private const val SHUFFLE_MODE_ON = "SHUFFLE_MODE_ON"
+        private const val SHUFFLE_MODE_OFF = "SHUFFLE_MODE_OFF"
         val COMMAND_SHUFFLE_MODE_ON = SessionCommand(SHUFFLE_MODE_ON, Bundle.EMPTY)
+        val COMMAND_SHUFFLE_MODE_OFF = SessionCommand(SHUFFLE_MODE_OFF, Bundle.EMPTY)
     }
 
 }
