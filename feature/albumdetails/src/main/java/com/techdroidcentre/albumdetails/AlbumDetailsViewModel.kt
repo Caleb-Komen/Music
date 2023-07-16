@@ -51,23 +51,12 @@ class AlbumDetailsViewModel @Inject constructor(
 
     fun play() {
         val player = musicServiceConnection.mediaBrowser.value ?: return
-
-        val isPrepared = player.playbackState != Player.STATE_IDLE
-        val playlistId = savedStateHandle.get<String>(PLAYLIST_ID)
-        if (isPrepared && playlistId == checkNotNull(albumDetailArgs.albumId)) {
-            when {
-                !player.isPlaying -> player.play()
-                player.playbackState == Player.STATE_ENDED -> player.seekTo(C.TIME_UNSET)
-            }
-        } else {
-            savedStateHandle[PLAYLIST_ID] = checkNotNull(albumDetailArgs.albumId)
-            val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren(checkNotNull(albumDetailArgs.albumId))
-                .toMutableList()
-            player.setMediaItems(playlist)
-            player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
-            player.prepare()
-            player.play()
-        }
+        val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren(checkNotNull(albumDetailArgs.albumId))
+            .toMutableList()
+        player.setMediaItems(playlist)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
+        player.prepare()
+        player.play()
     }
 
     fun shuffle() {
@@ -100,9 +89,5 @@ class AlbumDetailsViewModel @Inject constructor(
             player.prepare()
             player.play()
         }
-    }
-
-    companion object {
-        const val PLAYLIST_ID = "playlistId"
     }
 }
