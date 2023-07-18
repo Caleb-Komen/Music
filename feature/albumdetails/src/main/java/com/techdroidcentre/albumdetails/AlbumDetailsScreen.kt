@@ -80,6 +80,12 @@ fun AlbumDetailsScreen(
                     contentDescription = "Navigate back"
                 )
             }
+            Text(
+                text = uiState.album.name,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
         LazyColumn(
             modifier = Modifier
@@ -135,7 +141,7 @@ fun AlbumInfo(
                 )
                 if (uiState.album.year > 0) {
                     Text(
-                        text = "• ${uiState.album.year}",
+                        text = "Album • ${uiState.album.year}",
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
