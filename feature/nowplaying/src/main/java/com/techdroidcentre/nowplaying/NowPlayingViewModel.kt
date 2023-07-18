@@ -9,7 +9,6 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
-import com.techdroidcentre.model.Song
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -89,7 +88,7 @@ class NowPlayingViewModel @Inject constructor(
 
         } else if (isPrepared) {
             val mediaItem = playlist.first { it.mediaId == id }
-            player.seekTo(playlist.indexOf(mediaItem), C.TIME_UNSET)
+            player.seekTo(getMediaItemWindowIndex(mediaItem), C.TIME_UNSET)
             if (!player.isPlaying) player.play()
         } else {
             val mediaItem = playlist.first { it.mediaId == id }
@@ -159,5 +158,15 @@ class NowPlayingViewModel @Inject constructor(
             windowIndex = player.currentTimeline.getNextWindowIndex(windowIndex, player.repeatMode, player.shuffleModeEnabled)
         }
         return playlist
+    }
+
+    private fun getMediaItemWindowIndex(mediaItem: MediaItem) : Int {
+        val player = musicServiceConnection.mediaBrowser.value ?: return -1
+        var windowIndex = player.currentTimeline.getFirstWindowIndex(player.shuffleModeEnabled)
+        for (index in 0 until player.currentTimeline.windowCount) {
+            if (player.getMediaItemAt(windowIndex) == mediaItem) return windowIndex
+            windowIndex = player.currentTimeline.getNextWindowIndex(windowIndex, player.repeatMode, player.shuffleModeEnabled)
+        }
+        return player.currentMediaItemIndex
     }
 }
