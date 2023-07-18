@@ -22,6 +22,7 @@ import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
+import com.techdroidcentre.designsystem.icon.MusicIcons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.max
@@ -41,7 +42,7 @@ fun NowPlayingDynamicTheme(
         color.contrastAgainst(surfaceColor) >= 3f
     }
     DynamicThemePrimaryColorsFromImage(dominantColorState) {
-        // Update the dominantColorState with colors coming from the podcast image URL
+        // Update the dominantColorState with colors coming from the song album art
         LaunchedEffect(artworkData) {
             if (artworkData != null) {
                 if (artworkData.isNotEmpty()) {
@@ -49,7 +50,7 @@ fun NowPlayingDynamicTheme(
                 } else {
                     dominantColorState.reset()
                 }
-            }
+            } else { dominantColorState.updateColourFromImage(byteArrayOf()) }
         }
         content()
     }
@@ -135,12 +136,16 @@ class DominantColourState(
     }
 }
 
+const val RESOURCE_URI = "android.resource://com.techdroidcentre.music/drawable/"
+
 private suspend fun calculateSwatchesInImage(
     context: Context,
     artworkData: ByteArray
 ): List<Palette.Swatch> {
+    // song without an album art will use the default music note image.
+    val data = if (artworkData.isNotEmpty()) artworkData else RESOURCE_URI + MusicIcons.defaultMusicNote
     val request = ImageRequest.Builder(context)
-        .data(artworkData)
+        .data(data)
         .size(128).scale(Scale.FILL)
         .allowHardware(false)
         .memoryCacheKey("${artworkData.toString()}.palette")
