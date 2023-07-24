@@ -66,8 +66,7 @@ fun ArtistsScreen(
                 modifier = Modifier.padding(horizontal = 24.dp)
             )
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 24.dp)
+                modifier = Modifier.fillMaxSize()
             ) {
                 items(items = uiState.artists, key = { it.id }) { artist ->
                     ArtistItem(artist = artist, navigateToArtistDetails = navigateToArtistDetails)
@@ -92,23 +91,25 @@ fun ArtistItem(
     navigateToArtistDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.clickable { navigateToArtistDetails(artist.id) }) {
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_user_place_holder),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = artist.name)
+    Box(modifier = modifier.clickable { navigateToArtistDetails(artist.id) }) {
+        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_user_place_holder),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = artist.name)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Divider(thickness = 0.5.dp)
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Divider(thickness = 0.5.dp)
     }
 }

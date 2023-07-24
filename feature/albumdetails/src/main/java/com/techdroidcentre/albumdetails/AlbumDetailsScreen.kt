@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -90,11 +91,11 @@ fun AlbumDetailsScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
+            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            item { AlbumInfo(uiState = uiState) }
+            item { AlbumInfo(uiState = uiState, modifier = Modifier.padding(horizontal = 24.dp)) }
             item { Spacer(modifier = Modifier.height(16.dp)) }
-            item { AlbumMediaControls(play = play, shuffle = shuffle) }
+            item { AlbumMediaControls(play = play, shuffle = shuffle, modifier = Modifier.padding(horizontal = 24.dp)) }
             item { Spacer(modifier = Modifier.height(16.dp)) }
             albumSongsCollection(uiState = uiState, playOrPause = playOrPause)
         }
@@ -191,11 +192,12 @@ fun LazyListScope.albumSongsCollection(
     item {
         Text(
             text = "${uiState.songs.size} $stringValue",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 24.dp)
         )
     }
     item { Spacer(modifier = Modifier.height(4.dp)) }
-    item { Divider(thickness = 0.5.dp) }
+    item { Divider(thickness = 0.5.dp, modifier = Modifier.padding(horizontal = 24.dp)) }
     items(items = uiState.songs) { song ->
         AlbumSongItem(song = song, playOrPause = playOrPause)
     }
@@ -207,29 +209,31 @@ fun AlbumSongItem(
     playOrPause: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.clickable { playOrPause(song.id.toString()) }
-    ) {
-        if (song.trackNumber > 0) {
-            Text(
-                text = "${song.trackNumber}",
-                textAlign = TextAlign.End
-            )
-        }
-        Spacer(modifier = Modifier.width(8.dp))
-        Column {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.height(56.dp)
-            ) {
+    Box(modifier = modifier.clickable { playOrPause(song.id.toString()) }) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        ) {
+            if (song.trackNumber > 0) {
                 Text(
-                    text = song.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    text = "${song.trackNumber}",
+                    textAlign = TextAlign.End
                 )
             }
-            Divider(thickness = 0.5.dp)
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.height(56.dp)
+                ) {
+                    Text(
+                        text = song.title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Divider(thickness = 0.5.dp)
+            }
         }
     }
 }
