@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SongsViewModel(
     private val musicServiceConnection: MusicServiceConnection,
@@ -31,6 +32,8 @@ class SongsViewModel(
 
     init {
         fetchSongs(songsId)
+        fetchCurrentlyPlayingSong()
+        fetchPlayingState()
     }
 
     fun playOrPause(song: Song) {
@@ -79,6 +82,28 @@ class SongsViewModel(
                 )
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun fetchCurrentlyPlayingSong() {
+        viewModelScope.launch {
+            musicServiceConnection.nowPlaying.collect { mediaItem ->
+                if (mediaItem != MediaItem.EMPTY) {
+                    _uiState.update {
+                        it.copy(playingSongId = mediaItem.mediaId)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun fetchPlayingState() {
+        viewModelScope.launch {
+            musicServiceConnection.isPlaying.collect { isPlaying ->
+                _uiState.update {
+                    it.copy(isSongPlaying = isPlaying)
+                }
+            }
+        }
     }
 
     override fun onCleared() {

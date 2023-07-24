@@ -1,5 +1,6 @@
 package com.techdroidcentre.songs
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.component.AudioWave
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.model.Song
 
@@ -73,7 +76,12 @@ fun SongsScreen(
             }
 
             items(items = uiState.songs, key = { it.id }) { song ->
-                SongItem(song = song, playOrPause = playOrPause)
+                SongItem(
+                    song = song,
+                    playingSongId = uiState.playingSongId,
+                    isSongPlaying = uiState.isSongPlaying,
+                    playOrPause = playOrPause
+                )
             }
         }
         if (uiState.error.isNotBlank()) {
@@ -91,6 +99,8 @@ fun SongsScreen(
 @Composable
 fun SongItem(
     song: Song,
+    playingSongId: String,
+    isSongPlaying: Boolean,
     playOrPause: (Song) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -101,18 +111,23 @@ fun SongItem(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(song.artworkData)
-                    .crossfade(true)
-                    .build(),
-                error = painterResource(MusicIcons.defaultMusicNote),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(MaterialTheme.shapes.medium),
-                contentScale = ContentScale.Crop
-            )
+            Box(contentAlignment = Alignment.Center){
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(song.artworkData)
+                        .crossfade(true)
+                        .build(),
+                    error = painterResource(MusicIcons.defaultMusicNote),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(MaterialTheme.shapes.medium),
+                    contentScale = ContentScale.Crop
+                )
+                if (song.id.toString() == playingSongId) {
+                    AudioWave(isSongPlaying = isSongPlaying)
+                }
+            }
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
