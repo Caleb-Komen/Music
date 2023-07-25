@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techdroidcentre.designsystem"
+    namespace = "com.techdroidcentre.home"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -37,10 +37,14 @@ android {
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
 
-    implementation(libs.androidx.core.ktx)
+    implementation(project(":core:designsystem"))
 
     implementation(composeBom)
     implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
+    implementation(libs.androidx.navigation.compose)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
