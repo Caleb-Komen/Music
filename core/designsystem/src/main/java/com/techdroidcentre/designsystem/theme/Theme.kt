@@ -1,4 +1,4 @@
-package com.techdroidcentre.music.ui.theme
+package com.techdroidcentre.designsystem.theme
 
 import android.app.Activity
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.techdroidcentre.music.ui.theme
+package com.techdroidcentre.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

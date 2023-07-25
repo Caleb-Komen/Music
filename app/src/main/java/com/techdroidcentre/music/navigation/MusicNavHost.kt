@@ -11,10 +11,11 @@ import com.techdroidcentre.albums.navigation.albumsScreen
 import com.techdroidcentre.artistdetails.navigation.artistDetailsScreen
 import com.techdroidcentre.artistdetails.navigation.navigateToArtistDetails
 import com.techdroidcentre.artists.navigation.artistsScreen
+import com.techdroidcentre.home.navigation.homeNavigationRoute
+import com.techdroidcentre.home.navigation.homeScreen
 import com.techdroidcentre.player.ALBUMS_ID
 import com.techdroidcentre.player.ARTISTS_ID
 import com.techdroidcentre.player.SONGS_ID
-import com.techdroidcentre.songs.navigation.songsNavigationRoute
 import com.techdroidcentre.songs.navigation.songsScreen
 
 @Composable
@@ -25,9 +26,10 @@ fun MusicNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = songsNavigationRoute,
+        startDestination = homeNavigationRoute,
         modifier = modifier
     ) {
+        homeScreen()
         songsScreen(songsId = rootChildren.first { it.mediaId == SONGS_ID }.mediaId)
         albumsScreen(
             albumsId = rootChildren.first { it.mediaId == ALBUMS_ID }.mediaId,
