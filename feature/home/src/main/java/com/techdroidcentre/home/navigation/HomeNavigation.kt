@@ -6,8 +6,8 @@ import com.techdroidcentre.home.HomeScreen
 
 const val homeNavigationRoute = "home"
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(navigateToPlaylistsScreen: () -> Unit) {
     composable(homeNavigationRoute) {
-        HomeScreen()
+        HomeScreen(navigateToPlaylistsScreen = navigateToPlaylistsScreen)
     }
 }

@@ -22,10 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 
 @Composable
 fun HomeScreen(
+    navigateToPlaylistsScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize().statusBarsPadding()) {
@@ -35,17 +37,21 @@ fun HomeScreen(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 24.dp)
         )
-        PlaylistsCard(modifier = Modifier.padding(24.dp))
+        PlaylistsCard(
+            navigateToPlaylistsScreen = navigateToPlaylistsScreen,
+            modifier = Modifier.padding(24.dp)
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistsCard(
+    navigateToPlaylistsScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        onClick = {},
+        onClick = navigateToPlaylistsScreen,
         modifier = modifier
     ) {
         Row(
@@ -54,7 +60,7 @@ fun PlaylistsCard(
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Image(
-                painter = painterResource(R.drawable.queue_music),
+                painter = painterResource(MusicIcons.queueMusic),
                 contentDescription = null,
                 modifier = Modifier.size(48.dp)
             )
@@ -72,6 +78,6 @@ fun PlaylistsCard(
 @Composable
 fun HomeScreenPreview() {
     MusicTheme {
-        HomeScreen()
+        HomeScreen({})
     }
 }

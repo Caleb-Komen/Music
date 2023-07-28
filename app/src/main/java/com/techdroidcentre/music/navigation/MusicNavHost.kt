@@ -16,6 +16,8 @@ import com.techdroidcentre.home.navigation.homeScreen
 import com.techdroidcentre.player.ALBUMS_ID
 import com.techdroidcentre.player.ARTISTS_ID
 import com.techdroidcentre.player.SONGS_ID
+import com.techdroidcentre.playlists.navigation.navigateToPlaylistsScreen
+import com.techdroidcentre.playlists.navigation.playlistsScreen
 import com.techdroidcentre.songs.navigation.songsScreen
 
 @Composable
@@ -29,7 +31,11 @@ fun MusicNavHost(
         startDestination = homeNavigationRoute,
         modifier = modifier
     ) {
-        homeScreen()
+        homeScreen(
+            navigateToPlaylistsScreen = {
+                navController.navigateToPlaylistsScreen()
+            }
+        )
         songsScreen(songsId = rootChildren.first { it.mediaId == SONGS_ID }.mediaId)
         albumsScreen(
             albumsId = rootChildren.first { it.mediaId == ALBUMS_ID }.mediaId,
@@ -50,5 +56,6 @@ fun MusicNavHost(
             },
             onBackPress = { navController.popBackStack() }
         )
+        playlistsScreen(onBackPress = { navController.popBackStack() })
     }
 }
