@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techdroidcentre.data"
+    namespace = "com.techdroidcentre.database"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -31,8 +31,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:database"))
-    implementation(project(":core:model"))
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

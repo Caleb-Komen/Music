@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techdroidcentre.data"
+    namespace = "com.techdroidcentre.playlists"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -28,14 +28,35 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
 }
 
 dependencies {
-    implementation(project(":core:database"))
+    val composeBom = platform(libs.androidx.compose.bom)
+
+    implementation(project(":core:data"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    implementation(composeBom)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
 }
 
 kapt {
