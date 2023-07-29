@@ -53,6 +53,7 @@ import com.techdroidcentre.playlists.util.DbTransaction.UPDATE
 @Composable
 fun PlaylistsScreen(
     onBackPress: () -> Unit,
+    navigateToPlaylistSongs: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: PlaylistsViewModel = hiltViewModel()
 ) {
@@ -68,7 +69,8 @@ fun PlaylistsScreen(
             onCreatePlaylist = viewModel::savePlaylist,
             onRenamePlaylist = viewModel::updatePlaylist,
             onDeletePlaylist = viewModel::deletePlaylist,
-            onBackPress = onBackPress
+            onBackPress = onBackPress,
+            navigateToPlaylistSongs = navigateToPlaylistSongs
         )
 
         if (uiState.error.isNotBlank()) {
@@ -89,6 +91,7 @@ fun PlaylistsScreen(
     onCreatePlaylist: (String) -> Unit,
     onRenamePlaylist: (Playlist) -> Unit,
     onDeletePlaylist: (Long) -> Unit,
+    navigateToPlaylistSongs: (Long) -> Unit,
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -106,7 +109,8 @@ fun PlaylistsScreen(
                 PlaylistItem(
                     playlist = playlist,
                     onRenamePlaylist = onRenamePlaylist,
-                    onDeletePlaylist = onDeletePlaylist
+                    onDeletePlaylist = onDeletePlaylist,
+                    navigateToPlaylistSongs = navigateToPlaylistSongs
                 )
             }
         }
@@ -170,13 +174,14 @@ fun PlaylistItem(
     playlist: Playlist,
     onRenamePlaylist: (Playlist) -> Unit,
     onDeletePlaylist: (Long) -> Unit,
+    navigateToPlaylistSongs: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var playlistName by remember { mutableStateOf(playlist.name) }
 
-    Box(modifier = modifier.clickable {  }) {
+    Box(modifier = modifier.clickable { navigateToPlaylistSongs(playlist.id) }) {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .padding(horizontal = 24.dp)
@@ -256,7 +261,7 @@ fun PlaylistItemPreview() {
             Playlist(4, "Electronic"),
             Playlist(5, "Retro"),
             Playlist(6, "Disco Funk")
-        ), {}, {}, {}, {})
+        ), {}, {}, {}, {}, {})
     }
 }
 

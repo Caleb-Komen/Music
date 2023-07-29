@@ -11,8 +11,8 @@ fun NavController.navigateToPlaylistsScreen() {
     navigate(playlistsNavigationRoute)
 }
 
-fun NavGraphBuilder.playlistsScreen(onBackPress: () -> Unit) {
+fun NavGraphBuilder.playlistsScreen(onBackPress: () -> Unit, navigateToPlaylistSongs: (Long) -> Unit) {
     composable(playlistsNavigationRoute) {
-        PlaylistsScreen(onBackPress = onBackPress)
+        PlaylistsScreen(onBackPress = onBackPress, navigateToPlaylistSongs = navigateToPlaylistSongs)
     }
 }

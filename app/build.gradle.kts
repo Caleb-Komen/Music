@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:nowplaying"))
     implementation(project(":feature:playlists"))
+    implementation(project(":feature:playlistsongs"))
     implementation(project(":feature:songs"))
     implementation(project(":player"))
 

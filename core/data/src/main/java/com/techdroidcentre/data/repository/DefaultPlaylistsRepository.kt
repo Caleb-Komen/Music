@@ -17,6 +17,9 @@ class DefaultPlaylistsRepository @Inject constructor(
             it.map(PlaylistEntity::toModel)
         }
 
+    override fun getPlaylist(id: Long): Flow<Playlist> =
+        playlistsDao.getPlaylist(id).map(PlaylistEntity::toModel)
+
     override suspend fun insertPlaylist(playlist: Playlist) {
         playlistsDao.insertPlaylist(playlist.toEntity())
     }

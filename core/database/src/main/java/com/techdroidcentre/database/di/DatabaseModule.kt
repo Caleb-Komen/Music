@@ -3,6 +3,7 @@ package com.techdroidcentre.database.di
 import android.content.Context
 import androidx.room.Room
 import com.techdroidcentre.database.MusicDatabase
+import com.techdroidcentre.database.dao.PlaylistSongsDao
 import com.techdroidcentre.database.dao.PlaylistsDao
 import dagger.Module
 import dagger.Provides
@@ -26,5 +27,9 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun providePlaylistDao(database: MusicDatabase): PlaylistsDao = database.playlistsDao
+    fun providePlaylistsDao(database: MusicDatabase): PlaylistsDao = database.playlistsDao
+
+    @Provides
+    @Singleton
+    fun providePlaylistSongsDao(database: MusicDatabase): PlaylistSongsDao = database.playlistSongsDao
 }
