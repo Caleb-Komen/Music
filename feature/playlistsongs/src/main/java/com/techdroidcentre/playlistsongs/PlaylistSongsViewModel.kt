@@ -1,13 +1,18 @@
 package com.techdroidcentre.playlistsongs
 
+import android.os.Bundle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
 import com.techdroidcentre.data.repository.PlaylistSongsRepository
 import com.techdroidcentre.data.repository.PlaylistsRepository
+import com.techdroidcentre.player.MusicService
 import com.techdroidcentre.playlistsongs.navigation.PlaylistSongsArgs
 import com.techdroidcentre.playlistsongs.util.addOrRemove
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -79,12 +84,15 @@ class PlaylistSongsViewModel @Inject constructor(
         viewModelScope.launch {
             musicServiceConnection.mediaBrowser.collect { browser ->
                 this@PlaylistSongsViewModel.mediaBrowser = browser ?: return@collect
-                val children = musicServiceConnection.getChildren(checkNotNull(playlistSongsArgs.songsRoot))
+                val children = getAllSongs()
                 _uiState.update {
                     it.copy(allSongs = children.map { mediaItem -> mediaItem.toSong() })
                 }
             }
         }
+    }
+    private fun getAllSongs(): List<MediaItem> {
+        return musicServiceConnection.getChildren(checkNotNull(playlistSongsArgs.songsRoot))
     }
 
     fun insertSongs() {
@@ -113,6 +121,48 @@ class PlaylistSongsViewModel @Inject constructor(
     fun removeSong(songId: Long) {
         viewModelScope.launch {
             playlistSongsRepository.deletePlaylistSong(songId)
+        }
+    }
+
+    fun play() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val ids = _uiState.value.playlistSongs.map { it.id.toString() }
+        val playlist: MutableList<MediaItem> = getAllSongs().filter { ids.contains(it.mediaId) }.toMutableList()
+        player.setMediaItems(playlist)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
+        player.prepare()
+        player.play()
+    }
+
+    fun shuffle() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val ids = _uiState.value.playlistSongs.map { it.id.toString() }
+        val playlist: MutableList<MediaItem> = getAllSongs().filter { ids.contains(it.mediaId) }.toMutableList()
+        player.setMediaItems(playlist)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
+        player.prepare()
+        player.play()
+    }
+
+    fun playOrPause(id: String) {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+
+        val nowPlaying = musicServiceConnection.nowPlaying.value
+        val isPrepared = player.playbackState != Player.STATE_IDLE
+        if (isPrepared && id == nowPlaying.mediaId) {
+            when {
+                player.isPlaying -> player.pause()
+                player.playbackState == Player.STATE_ENDED -> player.seekTo(C.TIME_UNSET)
+                else -> player.play()
+            }
+        } else {
+            val ids = _uiState.value.playlistSongs.map { it.id.toString() }
+            val playlist: MutableList<MediaItem> = getAllSongs().filter { ids.contains(it.mediaId) }.toMutableList()
+            val mediaItem = playlist.first { it.mediaId == id }
+            val startIndex = playlist.indexOf(mediaItem)
+            player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
+            player.prepare()
+            player.play()
         }
     }
 }

@@ -63,9 +63,9 @@ fun PlaylistSongsScreen(
 
     PlaylistSongsScreen(
         uiState = uiState,
-        play = { /*TODO*/ },
-        shuffle = { /*TODO*/ },
-        playOrPause = {},
+        play = viewModel::play,
+        shuffle = viewModel::shuffle,
+        playOrPause = { viewModel.playOrPause(it.id.toString()) },
         onRemoveSong = viewModel::removeSong,
         onBackPress = onBackPress,
         onShowSelectableSongs = { showSelectableSongs = true }
