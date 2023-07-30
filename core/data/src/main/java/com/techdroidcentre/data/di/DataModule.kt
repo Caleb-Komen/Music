@@ -6,10 +6,13 @@ import com.techdroidcentre.data.repository.AlbumsRepository
 import com.techdroidcentre.data.repository.ArtistsRepository
 import com.techdroidcentre.data.repository.DefaultAlbumsRepository
 import com.techdroidcentre.data.repository.DefaultArtistsRepository
+import com.techdroidcentre.data.repository.DefaultPlaylistSongsRepository
 import com.techdroidcentre.data.repository.DefaultPlaylistsRepository
 import com.techdroidcentre.data.repository.DefaultSongsRepository
+import com.techdroidcentre.data.repository.PlaylistSongsRepository
 import com.techdroidcentre.data.repository.PlaylistsRepository
 import com.techdroidcentre.data.repository.SongsRepository
+import com.techdroidcentre.database.dao.PlaylistSongsDao
 import com.techdroidcentre.database.dao.PlaylistsDao
 import dagger.Module
 import dagger.Provides
@@ -58,4 +61,10 @@ object DataModule {
     ): PlaylistsRepository {
         return DefaultPlaylistsRepository(playlistsDao)
     }
+
+    @Singleton
+    @Provides
+    fun providePlaylistSongsRepository(
+        playlistSongsDao: PlaylistSongsDao
+    ): PlaylistSongsRepository = DefaultPlaylistSongsRepository(playlistSongsDao)
 }
