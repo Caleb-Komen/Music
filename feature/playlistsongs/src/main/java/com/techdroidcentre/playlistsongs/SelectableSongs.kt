@@ -14,12 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,8 +26,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,18 +45,21 @@ fun SelectableSongs(
     onCancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)) {
         Row(
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextButton(onClick = onSave) {
-                Text(text = "Done")
+            TextButton(onClick = onCancel) {
+                Text(text = "Cancel", color = MaterialTheme.colorScheme.onSurface)
             }
             Spacer(modifier = Modifier.weight(1f))
-            TextButton(onClick = onCancel) {
-                Text(text = "Cancel")
+            TextButton(onClick = onSave) {
+                Text(text = "Done", color = MaterialTheme.colorScheme.onSurface)
             }
         }
         LazyColumn(
@@ -131,22 +127,15 @@ fun SelectableSongItem(
     }
 }
 
-@Preview("Off")
-@Preview("Off (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview("SelectableSongs")
+@Preview("SelectableSongs (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SelectableSongsOffPreview() {
-    SelectableSongsPreview(selected = false)
-}
-
-@Preview("On")
-@Preview("On (dark)", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun SelectableSongsOnPreview() {
-    SelectableSongsPreview(selected = true)
+    SelectableSongsPreview()
 }
 
 @Composable
-fun SelectableSongsPreview(selected: Boolean) {
+fun SelectableSongsPreview() {
     MusicTheme {
         Surface {
             SelectableSongs(

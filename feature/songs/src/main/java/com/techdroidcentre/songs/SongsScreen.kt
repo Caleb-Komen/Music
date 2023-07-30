@@ -60,26 +60,26 @@ fun SongsScreen(
         modifier = modifier.fillMaxSize().statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            item {
-                Text(
-                    text = "Songs",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 24.dp)
-                )
-            }
-
-            items(items = uiState.songs, key = { it.id }) { song ->
-                SongItem(
-                    song = song,
-                    playingSongId = uiState.playingSongId,
-                    isSongPlaying = uiState.isSongPlaying,
-                    playOrPause = playOrPause
-                )
+        Column {
+            Text(
+                text = "Songs",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                items(items = uiState.songs, key = { it.id }) { song ->
+                    SongItem(
+                        song = song,
+                        playingSongId = uiState.playingSongId,
+                        isSongPlaying = uiState.isSongPlaying,
+                        playOrPause = playOrPause
+                    )
+                }
             }
         }
         if (uiState.error.isNotBlank()) {

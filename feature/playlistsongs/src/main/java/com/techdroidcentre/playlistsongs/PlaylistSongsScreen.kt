@@ -1,6 +1,8 @@
 package com.techdroidcentre.playlistsongs
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,7 +73,11 @@ fun PlaylistSongsScreen(
         onShowSelectableSongs = { showSelectableSongs = true }
     )
 
-    AnimatedVisibility(visible = showSelectableSongs) {
+    AnimatedVisibility(
+        visible = showSelectableSongs,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         SelectableSongs(
             songs = uiState.allSongs,
             selectedSongs = uiState.selectedSongs,
