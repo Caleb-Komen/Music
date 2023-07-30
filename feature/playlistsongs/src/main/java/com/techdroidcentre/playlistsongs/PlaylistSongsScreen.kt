@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -50,6 +51,7 @@ import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 import com.techdroidcentre.model.Playlist
 import com.techdroidcentre.model.Song
+import com.techdroidcentre.playlistsongs.components.PlaylistSongDropdownMenu
 
 @Composable
 fun PlaylistSongsScreen(
@@ -64,6 +66,7 @@ fun PlaylistSongsScreen(
         play = { /*TODO*/ },
         shuffle = { /*TODO*/ },
         playOrPause = {},
+        onRemoveSong = viewModel::removeSong,
         onBackPress = onBackPress,
         onShowSelectableSongs = { showSelectableSongs = true }
     )
@@ -93,6 +96,7 @@ fun PlaylistSongsScreen(
     play: () -> Unit,
     shuffle: () -> Unit,
     playOrPause: (Song) -> Unit,
+    onRemoveSong: (Long) -> Unit,
     onBackPress: () -> Unit,
     onShowSelectableSongs: () -> Unit,
     modifier: Modifier = Modifier
@@ -121,7 +125,8 @@ fun PlaylistSongsScreen(
                     song = song,
                     playingSongId = uiState.playingSongId,
                     isSongPlaying = uiState.isSongPlaying,
-                    playOrPause = playOrPause
+                    playOrPause = playOrPause,
+                    onRemoveSong = onRemoveSong
                 )
             }
         }
@@ -200,8 +205,10 @@ fun SongItem(
     playingSongId: String,
     isSongPlaying: Boolean,
     playOrPause: (Song) -> Unit,
+    onRemoveSong: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var expanded by remember { mutableStateOf(false) }
     Column(
         modifier = modifier.clickable { playOrPause(song) }
     ) {
@@ -230,7 +237,7 @@ fun SongItem(
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Column(modifier = Modifier.padding(end = 24.dp)) {
+            Column(modifier = Modifier.padding(end = 24.dp).weight(1f)) {
                 Text(
                     text = song.title,
                     style = MaterialTheme.typography.bodyLarge,
@@ -242,6 +249,22 @@ fun SongItem(
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
+                )
+            }
+            Box {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null
+                    )
+                }
+                PlaylistSongDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    onRemoveSong = {
+                        onRemoveSong(song.id)
+                        expanded = false
+                    }
                 )
             }
         }
@@ -265,7 +288,7 @@ fun PlaylistSongsScreenPreview() {
                     Song(id = 14, title = "Amazed", album = "Amazed", artist = "Lonestar"),
                 ),
                 selectedSongs = setOf(10, 12, 14)
-            ), {}, {}, {}, {}, {}
+            ), {}, {}, {}, {}, {}, {}
         )
     }
 }

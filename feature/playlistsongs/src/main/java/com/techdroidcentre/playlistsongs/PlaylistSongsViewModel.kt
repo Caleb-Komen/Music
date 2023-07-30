@@ -109,4 +109,10 @@ class PlaylistSongsViewModel @Inject constructor(
             it.copy(selectedSongs = ids)
         }
     }
+
+    fun removeSong(songId: Long) {
+        viewModelScope.launch {
+            playlistSongsRepository.deletePlaylistSong(songId)
+        }
+    }
 }
