@@ -10,6 +10,8 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
+import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.PlaylistSongsSortOption
 import com.techdroidcentre.data.repository.PlaylistSongsRepository
 import com.techdroidcentre.data.repository.PlaylistsRepository
 import com.techdroidcentre.player.MusicService
@@ -20,6 +22,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,6 +32,7 @@ class PlaylistSongsViewModel @Inject constructor(
     private val playlistsRepository: PlaylistsRepository,
     private val playlistSongsRepository: PlaylistSongsRepository,
     private val musicServiceConnection: MusicServiceConnection,
+    private val musicDataStore: MusicDataStore,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PlaylistSongsUiState())
@@ -68,12 +72,22 @@ class PlaylistSongsViewModel @Inject constructor(
             }
         }
         viewModelScope.launch(coroutineExceptionHandler) {
-            playlistSongsRepository.getPlaylistSongs(checkNotNull(playlistSongsArgs.playlistId)).collect { songs ->
+            combine(
+                playlistSongsRepository.getPlaylistSongs(checkNotNull(playlistSongsArgs.playlistId)),
+                musicDataStore.getPlaylistSongsSortOption()
+            ) { songs, playlistSongsSortOption ->
+                songs to playlistSongsSortOption
+            }.collect { (playlistSongs, playlistSongsSortOption) ->
+                val songs = when (playlistSongsSortOption) {
+                    PlaylistSongsSortOption.TITLE -> playlistSongs.sortedBy { it.title }
+                    PlaylistSongsSortOption.ARTIST -> playlistSongs.sortedBy { it.artist }
+                }
                 _uiState.update {
                     it.copy(
                         playlistSongs = songs,
                         error = "",
-                        loading = false
+                        loading = false,
+                        sortOption = playlistSongsSortOption
                     )
                 }
             }
@@ -163,6 +177,12 @@ class PlaylistSongsViewModel @Inject constructor(
             player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
             player.prepare()
             player.play()
+        }
+    }
+
+    fun setSongsSortOption(playlistSongsSortOption: PlaylistSongsSortOption) {
+        viewModelScope.launch {
+            musicDataStore.setPlaylistSongsSortOption(playlistSongsSortOption)
         }
     }
 }

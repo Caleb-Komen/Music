@@ -48,12 +48,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.data.datastore.PlaylistSongsSortOption
 import com.techdroidcentre.designsystem.component.AudioWave
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 import com.techdroidcentre.model.Playlist
 import com.techdroidcentre.model.Song
 import com.techdroidcentre.playlistsongs.components.PlaylistSongDropdownMenu
+import com.techdroidcentre.playlistsongs.components.SortSongsDropdownMenu
 
 @Composable
 fun PlaylistSongsScreen(
@@ -70,7 +72,8 @@ fun PlaylistSongsScreen(
         playOrPause = { viewModel.playOrPause(it.id.toString()) },
         onRemoveSong = viewModel::removeSong,
         onBackPress = onBackPress,
-        onShowSelectableSongs = { showSelectableSongs = true }
+        onShowSelectableSongs = { showSelectableSongs = true },
+        onSortSongs = viewModel::setSongsSortOption
     )
 
     AnimatedVisibility(
@@ -105,16 +108,20 @@ fun PlaylistSongsScreen(
     onRemoveSong: (Long) -> Unit,
     onBackPress: () -> Unit,
     onShowSelectableSongs: () -> Unit,
+    onSortSongs: (PlaylistSongsSortOption) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .statusBarsPadding()
     ) {
         PlaylistSongsTopBar(
             playlistName = uiState.playlist.name,
+            sortOption = uiState.sortOption.name,
             onBackPress = onBackPress,
-            onShowSelectableSongs = onShowSelectableSongs
+            onShowSelectableSongs = onShowSelectableSongs,
+            onSortSongs = onSortSongs
         )
         Spacer(modifier = Modifier.height(24.dp))
         PlaylistMediaControls(
@@ -143,10 +150,14 @@ fun PlaylistSongsScreen(
 @Composable
 fun PlaylistSongsTopBar(
     playlistName: String,
+    sortOption: String,
     onBackPress: () -> Unit,
     onShowSelectableSongs: () -> Unit,
+    onSortSongs: (PlaylistSongsSortOption) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -165,6 +176,23 @@ fun PlaylistSongsTopBar(
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f)
         )
+        Box{
+            IconButton(onClick = { expanded = true }) {
+                Icon(
+                    painter = painterResource(MusicIcons.sort),
+                    contentDescription = "Sort Songs"
+                )
+            }
+            SortSongsDropdownMenu(
+                expanded = expanded,
+                sortOption = sortOption,
+                onDismissRequest = { expanded = false },
+                onSortSongs = {
+                    onSortSongs(it)
+                    expanded = false
+                }
+            )
+        }
         IconButton(onClick = onShowSelectableSongs) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -243,7 +271,9 @@ fun SongItem(
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Column(modifier = Modifier.padding(end = 24.dp).weight(1f)) {
+            Column(modifier = Modifier
+                .padding(end = 24.dp)
+                .weight(1f)) {
                 Text(
                     text = song.title,
                     style = MaterialTheme.typography.bodyLarge,
@@ -294,7 +324,7 @@ fun PlaylistSongsScreenPreview() {
                     Song(id = 14, title = "Amazed", album = "Amazed", artist = "Lonestar"),
                 ),
                 selectedSongs = setOf(10, 12, 14)
-            ), {}, {}, {}, {}, {}, {}
+            ), {}, {}, {}, {}, {}, {}, {}
         )
     }
 }

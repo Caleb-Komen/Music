@@ -6,4 +6,5 @@ object MusicIcons {
     val defaultMusicNote = R.drawable.default_music_note
     val musicRecord = R.drawable.music_record
     val queueMusic = R.drawable.queue_music
+    val sort = R.drawable.baseline_sort_24
 }
