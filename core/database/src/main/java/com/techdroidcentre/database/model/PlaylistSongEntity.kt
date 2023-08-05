@@ -2,21 +2,9 @@ package com.techdroidcentre.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "playlist_songs",
-    foreignKeys = [
-        ForeignKey(
-            entity = PlaylistEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["playlist_id"],
-            onDelete = CASCADE
-        )
-    ]
-)
+@Entity(tableName = "playlist_songs",)
 data class PlaylistSongEntity(
     @PrimaryKey
     @ColumnInfo(name = "id")
@@ -34,9 +22,7 @@ data class PlaylistSongEntity(
     @ColumnInfo(name = "artwork_uri")
     val artworkUri: String,
     @ColumnInfo(name = "artwork_data")
-    val artworkData: ByteArray?,
-    @ColumnInfo(name = "playlist_id")
-    val playlistId: Long
+    val artworkData: ByteArray?
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

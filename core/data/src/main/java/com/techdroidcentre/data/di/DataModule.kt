@@ -57,9 +57,10 @@ object DataModule {
     @Singleton
     @Provides
     fun providePlaylistsRepository(
-        playlistsDao: PlaylistsDao
+        playlistsDao: PlaylistsDao,
+        playlistSongsDao: PlaylistSongsDao
     ): PlaylistsRepository {
-        return DefaultPlaylistsRepository(playlistsDao)
+        return DefaultPlaylistsRepository(playlistsDao, playlistSongsDao)
     }
 
     @Singleton

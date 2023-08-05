@@ -2,15 +2,18 @@ package com.techdroidcentre.data.repository
 
 import com.techdroidcentre.data.mapper.toEntity
 import com.techdroidcentre.data.mapper.toModel
+import com.techdroidcentre.database.dao.PlaylistSongsDao
 import com.techdroidcentre.database.dao.PlaylistsDao
 import com.techdroidcentre.database.model.PlaylistEntity
 import com.techdroidcentre.model.Playlist
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class DefaultPlaylistsRepository @Inject constructor(
-    private val playlistsDao: PlaylistsDao
+    private val playlistsDao: PlaylistsDao,
+    private val playlistSongsDao: PlaylistSongsDao
 ): PlaylistsRepository {
     override fun getPlaylists(): Flow<List<Playlist>> =
         playlistsDao.getPlaylists().map {
@@ -29,6 +32,12 @@ class DefaultPlaylistsRepository @Inject constructor(
     }
 
     override suspend fun deletePlaylist(id: Long) {
+        val songs = playlistSongsDao.getPlaylistSongs(id).first().songs
+        songs.forEach {
+            playlistSongsDao.deletePlaylistSong(id, it.id)
+            val playlists = playlistSongsDao.getPlaylistsWithSong(it.id).first().playlists
+            if (playlists.isEmpty()) playlistSongsDao.deletePlaylistSong(it.id)
+        }
         playlistsDao.deletePlaylist(id)
     }
 }

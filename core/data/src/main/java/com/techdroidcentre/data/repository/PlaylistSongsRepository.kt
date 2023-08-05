@@ -8,5 +8,5 @@ interface PlaylistSongsRepository {
 
     suspend fun insertPlaylistSongs(playlistId: Long, vararg song: Song)
 
-    suspend fun deletePlaylistSong(songId: Long)
+    suspend fun deletePlaylistSong(playlistId: Long, songId: Long)
 }

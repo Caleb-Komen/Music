@@ -4,13 +4,13 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class PlaylistWithSongs(
+data class SongWithPlaylists(
     @Embedded
-    val playlistEntity: PlaylistEntity,
+    val playlistSongEntity: PlaylistSongEntity,
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
-        associateBy = Junction(PlaylistSongCrossRef::class, "playlist_id", "song_id")
+        associateBy = Junction(PlaylistSongCrossRef::class, "song_id", "playlist_id")
     )
-    val songs: List<PlaylistSongEntity>
+    val playlists: List<PlaylistEntity>
 )

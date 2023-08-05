@@ -134,7 +134,8 @@ class PlaylistSongsViewModel @Inject constructor(
 
     fun removeSong(songId: Long) {
         viewModelScope.launch {
-            playlistSongsRepository.deletePlaylistSong(songId)
+            val playlistId = _uiState.value.playlist.id
+            playlistSongsRepository.deletePlaylistSong(playlistId, songId)
         }
     }
 

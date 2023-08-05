@@ -15,7 +15,7 @@ fun PlaylistEntity.toModel() = Playlist(
     name = name
 )
 
-fun Song.toEntity(playlistId: Long) = PlaylistSongEntity(
+fun Song.toEntity() = PlaylistSongEntity(
     id = id,
     uri = uri,
     title = title,
@@ -23,8 +23,7 @@ fun Song.toEntity(playlistId: Long) = PlaylistSongEntity(
     artist = artist,
     trackNumber = trackNumber,
     artworkUri = artworkUri,
-    artworkData = artworkData,
-    playlistId = playlistId
+    artworkData = artworkData
 )
 
 fun PlaylistSongEntity.toModel() = Song(
