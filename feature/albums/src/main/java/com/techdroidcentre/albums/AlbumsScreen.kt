@@ -60,7 +60,8 @@ fun AlbumsScreen(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
             .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
@@ -84,16 +85,25 @@ fun AlbumsScreen(
                 }
             }
         }
+        if (!uiState.loading && uiState.albums.isEmpty()) EmptyAlbumsScreen(modifier = Modifier.padding(24.dp))
+
         if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error)
+            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
         }
 
         if (uiState.loading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-            )
+            CircularProgressIndicator()
         }
     }
+}
+
+@Composable
+fun EmptyAlbumsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No albums found.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable

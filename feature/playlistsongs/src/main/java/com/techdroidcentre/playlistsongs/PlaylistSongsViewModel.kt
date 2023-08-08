@@ -105,6 +105,7 @@ class PlaylistSongsViewModel @Inject constructor(
             }
         }
     }
+
     private fun getAllSongs(): List<MediaItem> {
         return musicServiceConnection.getChildren(checkNotNull(playlistSongsArgs.songsRoot))
     }

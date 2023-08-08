@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -102,16 +103,25 @@ fun ArtistDetailsScreen(
                 }
             }
         }
+        if (!uiState.loading && uiState.albums.isEmpty()) EmptyAlbumsScreen(modifier = Modifier.padding(24.dp))
+
         if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error)
+            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
         }
 
         if (uiState.loading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-            )
+            CircularProgressIndicator()
         }
     }
+}
+
+@Composable
+fun EmptyAlbumsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No albums found for artist.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable

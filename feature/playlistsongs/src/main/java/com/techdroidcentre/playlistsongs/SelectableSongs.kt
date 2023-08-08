@@ -3,6 +3,7 @@ package com.techdroidcentre.playlistsongs
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -62,19 +63,31 @@ fun SelectableSongs(
                 Text(text = "Done", color = MaterialTheme.colorScheme.onSurface)
             }
         }
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item { Spacer(modifier = Modifier.height(24.dp)) }
-            items(items = songs) { song ->
-                SelectableSongItem(
-                    song = song,
-                    selected = selectedSongs.contains(song.id),
-                    onSelect = onSelect
-                )
+        Box(contentAlignment = Alignment.Center) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item { Spacer(modifier = Modifier.height(24.dp)) }
+                items(items = songs) { song ->
+                    SelectableSongItem(
+                        song = song,
+                        selected = selectedSongs.contains(song.id),
+                        onSelect = onSelect
+                    )
+                }
             }
+            if (songs.isEmpty())  EmptySongsScreen(modifier = Modifier.padding(24.dp))
         }
     }
+}
+
+@Composable
+fun EmptySongsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No music found.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable

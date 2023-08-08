@@ -72,14 +72,14 @@ fun PlaylistsScreen(
             navigateToPlaylistSongs = navigateToPlaylistSongs
         )
 
+        if (!uiState.loading && uiState.playlists.isEmpty()) EmptyPlaylistsScreen(modifier = Modifier.padding(24.dp))
+
         if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error)
+            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
         }
 
         if (uiState.loading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-            )
+            CircularProgressIndicator()
         }
     }
 }
@@ -94,15 +94,14 @@ fun PlaylistsScreen(
     onBackPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier = modifier) {
         PlaylistsTopBar(
             onCreatePlaylist = onCreatePlaylist,
             onBackPress = onBackPress
         )
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .height(56.dp)
         ) {
             items(items = playlists, key = { it.id }) { playlist ->
                 PlaylistItem(
@@ -169,6 +168,15 @@ fun PlaylistsTopBar(
 }
 
 @Composable
+fun EmptyPlaylistsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No playlists found.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
+}
+
+@Composable
 fun PlaylistItem(
     playlist: Playlist,
     onRenamePlaylist: (Playlist) -> Unit,
@@ -182,7 +190,8 @@ fun PlaylistItem(
 
     Box(modifier = modifier.clickable { navigateToPlaylistSongs(playlist.id) }) {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(8.dp))

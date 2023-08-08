@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -73,16 +72,25 @@ fun ArtistsScreen(
                 }
             }
         }
+        if (!uiState.loading && uiState.artists.isEmpty()) EmptyArtistsScreen(modifier = Modifier.padding(24.dp))
+
         if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error)
+            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
         }
 
         if (uiState.loading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-            )
+            CircularProgressIndicator()
         }
     }
+}
+
+@Composable
+fun EmptyArtistsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No artists found.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable

@@ -95,11 +95,30 @@ fun AlbumDetailsScreen(
         ) {
             item { AlbumInfo(uiState = uiState, modifier = Modifier.padding(horizontal = 24.dp)) }
             item { Spacer(modifier = Modifier.height(16.dp)) }
-            item { AlbumMediaControls(play = play, shuffle = shuffle, modifier = Modifier.padding(horizontal = 24.dp)) }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            albumSongsCollection(uiState = uiState, playOrPause = playOrPause)
+            if (!uiState.loading && uiState.songs.isNotEmpty()) {
+                item {
+                    AlbumMediaControls(
+                        play = play,
+                        shuffle = shuffle,
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    )
+                }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                albumSongsCollection(uiState = uiState, playOrPause = playOrPause)
+            } else {
+                item { EmptySongsScreen(modifier = Modifier.padding(24.dp)) }
+            }
         }
     }
+}
+
+@Composable
+fun EmptySongsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No music found.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable

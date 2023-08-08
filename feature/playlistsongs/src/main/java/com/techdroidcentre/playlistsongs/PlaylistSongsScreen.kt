@@ -129,19 +129,22 @@ fun PlaylistSongsScreen(
             shuffle = shuffle,
             modifier = Modifier.padding(horizontal = 24.dp)
         )
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            item { Spacer(modifier = Modifier.height(24.dp)) }
-            items(items = uiState.playlistSongs, key = { it.id }) { song ->
-                SongItem(
-                    song = song,
-                    playingSongId = uiState.playingSongId,
-                    isSongPlaying = uiState.isSongPlaying,
-                    playOrPause = playOrPause,
-                    onRemoveSong = onRemoveSong
-                )
+        Box(contentAlignment = Alignment.Center) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item { Spacer(modifier = Modifier.height(24.dp)) }
+                items(items = uiState.playlistSongs, key = { it.id }) { song ->
+                    SongItem(
+                        song = song,
+                        playingSongId = uiState.playingSongId,
+                        isSongPlaying = uiState.isSongPlaying,
+                        playOrPause = playOrPause,
+                        onRemoveSong = onRemoveSong
+                    )
+                }
             }
+            if (!uiState.loading && uiState.playlistSongs.isEmpty()) EmptyPlaylistSongsScreen(modifier = Modifier.padding(24.dp))
         }
     }
 
@@ -176,7 +179,7 @@ fun PlaylistSongsTopBar(
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f)
         )
-        Box{
+        Box {
             IconButton(onClick = { expanded = true }) {
                 Icon(
                     painter = painterResource(MusicIcons.sort),
@@ -231,6 +234,15 @@ fun PlaylistMediaControls(
             )
         }
     }
+}
+
+@Composable
+fun EmptyPlaylistSongsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No music found in this playlist.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable

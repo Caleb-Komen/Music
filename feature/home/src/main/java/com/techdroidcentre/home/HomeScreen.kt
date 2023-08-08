@@ -69,8 +69,7 @@ fun PlaylistsCard(
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Playlists",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
+                style = MaterialTheme.typography.titleMedium
             )
         }
     }

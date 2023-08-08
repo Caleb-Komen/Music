@@ -57,7 +57,9 @@ fun SongsScreen(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize().statusBarsPadding(),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Column {
@@ -82,16 +84,25 @@ fun SongsScreen(
                 }
             }
         }
+        if (!uiState.loading && uiState.songs.isEmpty()) EmptySongsScreen(modifier = Modifier.padding(24.dp))
+
         if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error)
+            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
         }
 
         if (uiState.loading) {
-            CircularProgressIndicator(
-                modifier = Modifier
-            )
+            CircularProgressIndicator()
         }
     }
+}
+
+@Composable
+fun EmptySongsScreen(modifier: Modifier = Modifier) {
+    Text(
+        text = "No music found.",
+        style = MaterialTheme.typography.titleMedium,
+        modifier = modifier
+    )
 }
 
 @Composable
