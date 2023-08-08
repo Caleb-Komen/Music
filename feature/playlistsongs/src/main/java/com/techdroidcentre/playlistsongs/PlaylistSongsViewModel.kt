@@ -144,7 +144,11 @@ class PlaylistSongsViewModel @Inject constructor(
         val player = musicServiceConnection.mediaBrowser.value ?: return
         val ids = _uiState.value.playlistSongs.map { it.id.toString() }
         val playlist: MutableList<MediaItem> = getAllSongs().filter { ids.contains(it.mediaId) }.toMutableList()
-        player.setMediaItems(playlist)
+        val mediaItems = when (_uiState.value.sortOption) {
+            PlaylistSongsSortOption.TITLE -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+            PlaylistSongsSortOption.ARTIST -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+        }
+        player.setMediaItems(mediaItems)
         player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
         player.prepare()
         player.play()
@@ -154,7 +158,11 @@ class PlaylistSongsViewModel @Inject constructor(
         val player = musicServiceConnection.mediaBrowser.value ?: return
         val ids = _uiState.value.playlistSongs.map { it.id.toString() }
         val playlist: MutableList<MediaItem> = getAllSongs().filter { ids.contains(it.mediaId) }.toMutableList()
-        player.setMediaItems(playlist)
+        val mediaItems = when (_uiState.value.sortOption) {
+            PlaylistSongsSortOption.TITLE -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+            PlaylistSongsSortOption.ARTIST -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+        }
+        player.setMediaItems(mediaItems)
         player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
         player.prepare()
         player.play()
@@ -174,9 +182,13 @@ class PlaylistSongsViewModel @Inject constructor(
         } else {
             val ids = _uiState.value.playlistSongs.map { it.id.toString() }
             val playlist: MutableList<MediaItem> = getAllSongs().filter { ids.contains(it.mediaId) }.toMutableList()
-            val mediaItem = playlist.first { it.mediaId == id }
-            val startIndex = playlist.indexOf(mediaItem)
-            player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
+            val mediaItems = when (_uiState.value.sortOption) {
+                PlaylistSongsSortOption.TITLE -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+                PlaylistSongsSortOption.ARTIST -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+            }
+            val mediaItem = mediaItems.first { it.mediaId == id }
+            val startIndex = mediaItems.indexOf(mediaItem)
+            player.setMediaItems(mediaItems, startIndex, C.TIME_UNSET)
             player.prepare()
             player.play()
         }
