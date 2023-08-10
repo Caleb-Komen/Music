@@ -16,6 +16,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mu
 class MusicDataStore @Inject constructor(@ApplicationContext val context: Context) {
     private val songsSortOptionKey = intPreferencesKey("songs_sort_option")
     private val playlistSongsSortOptionKey = intPreferencesKey("playlist_songs_sort_option")
+    private val artistAlbumsSortOptionKey = intPreferencesKey("artist_albums_sort_option")
 
     suspend fun setSongsSortOption(songsSortOption: SongsSortOption) {
         context.dataStore.edit { preferences ->
@@ -29,6 +30,12 @@ class MusicDataStore @Inject constructor(@ApplicationContext val context: Contex
         }
     }
 
+    suspend fun setArtistAlbumsSortOption(artistAlbumsSortOption: ArtistAlbumsSortOption) {
+        context.dataStore.edit { preferences ->
+            preferences[artistAlbumsSortOptionKey] = artistAlbumsSortOption.ordinal
+        }
+    }
+
     fun getSongsSortOption(): Flow<SongsSortOption> {
         return context.dataStore.data.map { preferences ->
             SongsSortOption.values()[preferences[songsSortOptionKey] ?: SongsSortOption.TITLE.ordinal]
@@ -38,6 +45,12 @@ class MusicDataStore @Inject constructor(@ApplicationContext val context: Contex
     fun getPlaylistSongsSortOption(): Flow<PlaylistSongsSortOption> {
         return context.dataStore.data.map { preferences ->
             PlaylistSongsSortOption.values()[preferences[playlistSongsSortOptionKey] ?: PlaylistSongsSortOption.TITLE.ordinal]
+        }
+    }
+
+    fun getArtistAlbumsSortOption(): Flow<ArtistAlbumsSortOption> {
+        return context.dataStore.data.map { preferences ->
+            ArtistAlbumsSortOption.values()[preferences[artistAlbumsSortOptionKey] ?: ArtistAlbumsSortOption.TITLE.ordinal]
         }
     }
 }

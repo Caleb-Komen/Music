@@ -40,6 +40,8 @@ dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
 
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

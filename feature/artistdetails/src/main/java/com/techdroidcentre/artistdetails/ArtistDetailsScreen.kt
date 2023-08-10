@@ -27,6 +27,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +44,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.session.R
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.artistdetails.components.SortAlbumsDropdownMenu
+import com.techdroidcentre.data.datastore.ArtistAlbumsSortOption
+import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.model.Album
 
 @Composable
@@ -55,7 +61,8 @@ fun ArtistDetailsScreen(
         uiState = uiState,
         modifier = modifier,
         navigateToAlbumDetails = navigateToAlbumDetails,
-        onBackPress = onBackPress
+        onBackPress = onBackPress,
+        onSortAlbums = viewModel::setArtistAlbumsSortOption
     )
 }
 
@@ -64,6 +71,7 @@ fun ArtistDetailsScreen(
     uiState: ArtistDetailsUiState,
     navigateToAlbumDetails: (String) -> Unit,
     onBackPress: () -> Unit,
+    onSortAlbums: (ArtistAlbumsSortOption) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -73,23 +81,12 @@ fun ArtistDetailsScreen(
         contentAlignment = Alignment.Center
     ){
         Column {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBackPress) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Navigate back"
-                    )
-                }
-                Text(
-                    text = uiState.artist,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            ArtistAlbumsTopBar(
+                artist = uiState.artist,
+                sortOption = uiState.sortOption.name,
+                onBackPress = onBackPress,
+                onSortAlbums = onSortAlbums
+            )
             Spacer(modifier = Modifier.height(8.dp))
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(128.dp),
@@ -111,6 +108,56 @@ fun ArtistDetailsScreen(
 
         if (uiState.loading) {
             CircularProgressIndicator()
+        }
+    }
+}
+
+@Composable
+fun ArtistAlbumsTopBar(
+    artist: String,
+    sortOption: String,
+    onBackPress: () -> Unit,
+    onSortAlbums: (ArtistAlbumsSortOption) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBackPress) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Navigate back"
+            )
+        }
+        Text(
+            text = artist,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(1f)
+        )
+        Box {
+            IconButton(
+                onClick = { expanded = true }
+            ) {
+                Icon(
+                    painter = painterResource(MusicIcons.sort),
+                    contentDescription = "Sort Albums"
+                )
+            }
+            SortAlbumsDropdownMenu(
+                expanded = expanded,
+                sortOption = sortOption,
+                onDismissRequest = { expanded = false },
+                onSortAlbums = {
+                    onSortAlbums(it)
+                    expanded = false
+                }
+            )
         }
     }
 }
