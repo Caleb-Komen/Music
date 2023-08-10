@@ -12,18 +12,20 @@ import androidx.media3.common.Player
 import androidx.media3.session.MediaBrowser
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
+import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.SongsSortOption
 import com.techdroidcentre.model.Song
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SongsViewModel(
     private val musicServiceConnection: MusicServiceConnection,
-    private val songsId: String
+    private val songsId: String,
+    private val musicDataStore: MusicDataStore
 ): ViewModel() {
     private val _uiState = MutableStateFlow(SongsUiState())
     val uiState: StateFlow<SongsUiState> = _uiState
@@ -48,12 +50,16 @@ class SongsViewModel(
                 else -> player.play()
             }
         } else {
-            val playlist: MutableList<MediaItem> = musicServiceConnection.getChildren(songsId).toMutableList()
-            val mediaItem = playlist.first { it.mediaId == song.id.toString() }
-            if (playlist.isEmpty()) playlist.add(mediaItem)
-            val indexOf = playlist.indexOf(mediaItem)
+            val playlist: List<MediaItem> = musicServiceConnection.getChildren(songsId)
+            val mediaItems = when (_uiState.value.sortOption) {
+                SongsSortOption.TITLE -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+                SongsSortOption.ARTIST -> playlist.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+            }.toMutableList()
+            val mediaItem = mediaItems.first { it.mediaId == song.id.toString() }
+            if (mediaItems.isEmpty()) mediaItems.add(mediaItem)
+            val indexOf = mediaItems.indexOf(mediaItem)
             val startIndex = if (indexOf >=0 ) indexOf else 0
-            player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
+            player.setMediaItems(mediaItems, startIndex, C.TIME_UNSET)
             player.prepare()
             player.play()
         }
@@ -63,25 +69,39 @@ class SongsViewModel(
         _uiState.update {
             it.copy(loading = true)
         }
-        musicServiceConnection.mediaBrowser.onEach { browser ->
-            this.mediaBrowser = browser ?: return@onEach
-            val children = musicServiceConnection.getChildren(songsId)
-            _uiState.update {
-                it.copy(
-                    songs = children.map { mediaItem -> mediaItem.toSong() },
-                    error = "",
-                    loading = false
-                )
+
+        viewModelScope.launch {
+            combine(
+                musicServiceConnection.mediaBrowser,
+                musicDataStore.getSongsSortOption()
+            ) { browser, songsSortOption ->
+                browser to songsSortOption
+            }.catch { throwable ->
+                _uiState.update {
+                    it.copy(
+                        songs = emptyList(),
+                        error = throwable.localizedMessage ?: "Unknown Error",
+                        loading = false
+                    )
+                }
+            }.collect { (browser, songsSortOption) ->
+                this@SongsViewModel.mediaBrowser = browser ?: return@collect
+                val children = musicServiceConnection.getChildren(songsId).map { mediaItem -> mediaItem.toSong() }
+                val songs = when (songsSortOption) {
+                    SongsSortOption.TITLE -> children.sortedBy { song -> song.title }
+                    SongsSortOption.ARTIST -> children.sortedBy { song -> song.artist }
+                }
+                _uiState.update {
+                    it.copy(
+                        songs = songs,
+                        error = "",
+                        loading = false,
+                        sortOption = songsSortOption
+                    )
+                }
             }
-        }.catch { throwable ->
-            _uiState.update {
-                it.copy(
-                    songs = emptyList(),
-                    error = throwable.localizedMessage ?: "Unknown Error",
-                    loading = false
-                )
-            }
-        }.launchIn(viewModelScope)
+        }
+
     }
 
     private fun fetchCurrentlyPlayingSong() {
@@ -106,6 +126,12 @@ class SongsViewModel(
         }
     }
 
+    fun setSongsSortOption(songsSortOption: SongsSortOption) {
+        viewModelScope.launch {
+            musicDataStore.setSongsSortOption(songsSortOption)
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         musicServiceConnection.releaseBrowser()
@@ -115,7 +141,7 @@ class SongsViewModel(
         fun provideFactory(songsId: String) = viewModelFactory {
             initializer {
                 val context = (this[APPLICATION_KEY] as Context).applicationContext
-                SongsViewModel(MusicServiceConnection(context), songsId)
+                SongsViewModel(MusicServiceConnection(context), songsId, MusicDataStore(context))
             }
         }
     }
