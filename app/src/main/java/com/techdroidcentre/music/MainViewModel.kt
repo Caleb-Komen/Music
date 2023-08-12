@@ -1,30 +1,52 @@
 package com.techdroidcentre.music
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.session.MediaBrowser
 import com.google.common.util.concurrent.MoreExecutors
 import com.techdroidcentre.common.MusicServiceConnection
+import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.ShuffleMode
+import com.techdroidcentre.player.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val musicServiceConnection: MusicServiceConnection
+    private val musicServiceConnection: MusicServiceConnection,
+    musicDataStore: MusicDataStore
 ): ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState
 
     init {
-        musicServiceConnection.mediaBrowser.onEach { browser ->
+        combine(
+            musicServiceConnection.mediaBrowser,
+            musicDataStore.getShuffleMode()
+        ) { browser, shuffleMode ->
+            browser to shuffleMode
+        }.onEach { (browser, shuffleMode) ->
             val mediaBrowser: MediaBrowser = browser ?: return@onEach
             val rootFuture = mediaBrowser.getLibraryRoot(null)
+            when (shuffleMode) {
+                ShuffleMode.ON -> {
+                    if (!mediaBrowser.shuffleModeEnabled)
+                        mediaBrowser.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
+                }
+                ShuffleMode.OFF -> {
+                    if (mediaBrowser.shuffleModeEnabled)
+                        mediaBrowser.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
+                }
+            }
 
             rootFuture.addListener(
                 {
@@ -48,6 +70,12 @@ class MainViewModel @Inject constructor(
             },
             MoreExecutors.directExecutor()
         )
+    }
+
+    private fun getShuffleMode() {
+        viewModelScope.launch {
+
+        }
     }
 
     override fun onCleared() {

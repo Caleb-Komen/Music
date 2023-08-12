@@ -53,6 +53,7 @@ dependencies {
 
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
     implementation(project(":feature:albumdetails"))
     implementation(project(":feature:albums"))
     implementation(project(":feature:artistdetails"))

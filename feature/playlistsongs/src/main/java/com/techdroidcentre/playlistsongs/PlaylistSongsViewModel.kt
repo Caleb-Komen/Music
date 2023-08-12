@@ -12,6 +12,7 @@ import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
 import com.techdroidcentre.data.datastore.MusicDataStore
 import com.techdroidcentre.data.datastore.PlaylistSongsSortOption
+import com.techdroidcentre.data.datastore.ShuffleMode
 import com.techdroidcentre.data.repository.PlaylistSongsRepository
 import com.techdroidcentre.data.repository.PlaylistsRepository
 import com.techdroidcentre.player.MusicService
@@ -150,6 +151,7 @@ class PlaylistSongsViewModel @Inject constructor(
         }
         player.setMediaItems(mediaItems)
         player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
+        setShuffleMode(ShuffleMode.OFF)
         player.prepare()
         player.play()
     }
@@ -164,6 +166,7 @@ class PlaylistSongsViewModel @Inject constructor(
         }
         player.setMediaItems(mediaItems)
         player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
+        setShuffleMode(ShuffleMode.ON)
         player.prepare()
         player.play()
     }
@@ -197,6 +200,12 @@ class PlaylistSongsViewModel @Inject constructor(
     fun setSongsSortOption(playlistSongsSortOption: PlaylistSongsSortOption) {
         viewModelScope.launch {
             musicDataStore.setPlaylistSongsSortOption(playlistSongsSortOption)
+        }
+    }
+
+    private fun setShuffleMode(shuffleMode: ShuffleMode) {
+        viewModelScope.launch {
+            musicDataStore.setShuffleMode(shuffleMode)
         }
     }
 }

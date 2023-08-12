@@ -11,6 +11,8 @@ import com.techdroidcentre.albumdetails.navigation.AlbumDetailsArgs
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toAlbum
 import com.techdroidcentre.common.toSong
+import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.ShuffleMode
 import com.techdroidcentre.player.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AlbumDetailsViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection,
-    private val savedStateHandle: SavedStateHandle
+    private val musicDataStore: MusicDataStore,
+    savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val _uiState = MutableStateFlow(AlbumDetailsUiState())
     val uiState: StateFlow<AlbumDetailsUiState> = _uiState
@@ -55,6 +58,7 @@ class AlbumDetailsViewModel @Inject constructor(
             .toMutableList()
         player.setMediaItems(playlist)
         player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
+        setShuffleMode(ShuffleMode.OFF)
         player.prepare()
         player.play()
     }
@@ -65,6 +69,7 @@ class AlbumDetailsViewModel @Inject constructor(
             .toMutableList()
         player.setMediaItems(playlist)
         player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
+        setShuffleMode(ShuffleMode.ON)
         player.prepare()
         player.play()
     }
@@ -88,6 +93,12 @@ class AlbumDetailsViewModel @Inject constructor(
             player.setMediaItems(playlist, startIndex, C.TIME_UNSET)
             player.prepare()
             player.play()
+        }
+    }
+
+    private fun setShuffleMode(shuffleMode: ShuffleMode) {
+        viewModelScope.launch {
+            musicDataStore.setShuffleMode(shuffleMode)
         }
     }
 }
