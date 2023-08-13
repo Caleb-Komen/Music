@@ -1,5 +1,7 @@
 package com.techdroidcentre.nowplaying
 
+import android.app.Activity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -24,8 +26,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,17 +38,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.designsystem.icon.MusicIcons
+import com.techdroidcentre.designsystem.theme.MusicTheme
 
 @ExperimentalMaterial3Api
 @Composable
@@ -72,6 +81,47 @@ fun NowPlayingSheet(
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
+
+                    MusicTheme(darkTheme = true) {
+                        val view = LocalView.current
+                        val darkTheme = isSystemInDarkTheme()
+                        SideEffect {
+                            with (view.context as Activity) {
+                                window.statusBarColor = Color.Transparent.toArgb()
+                                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                            }
+                        }
+                        NowPlayingDynamicTheme(artworkData = uiState.song.artworkData) {
+                            Surface(
+                                modifier = Modifier.fillMaxSize()
+                                    .graphicsLayer {
+                                        alpha = 1 - alphaValue
+                                    },
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .verticalGradientScrim(
+                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.90f),
+                                            startYPercentage = 1f,
+                                            endYPercentage = 0f
+                                        ).statusBarsPadding(),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    BottomSheetDefaults.DragHandle()
+                                    NowPlayingScreen(
+                                        uiState = uiState,
+                                        onPositionChange = { viewModel.seekTo(it.toLong()) },
+                                        playNextSong = viewModel::playNextSong,
+                                        playPreviousSong = viewModel::playPreviousSong,
+                                        playOrPause = viewModel::playOrPause,
+                                        play = viewModel::play,
+                                        togglePlaylistItems = viewModel::togglePlaylistItems
+                                    )
+                                }
+                            }
+                        }
+                    }
                     Row(
                         modifier = Modifier
                             .height(closedSheetHeight)
@@ -119,31 +169,6 @@ fun NowPlayingSheet(
                             Icon(
                                 painter = painterResource(id = R.drawable.baseline_skip_next_24),
                                 contentDescription = "skip to next"
-                            )
-                        }
-                    }
-                    NowPlayingDynamicTheme(artworkData = uiState.song.artworkData) {
-                        Column(
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    alpha = 1 - alphaValue
-                                }
-                                .verticalGradientScrim(
-                                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.90f),
-                                    startYPercentage = 1f,
-                                    endYPercentage = 0f
-                                ).statusBarsPadding(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            BottomSheetDefaults.DragHandle()
-                            NowPlayingScreen(
-                                uiState = uiState,
-                                onPositionChange = { viewModel.seekTo(it.toLong()) },
-                                playNextSong = viewModel::playNextSong,
-                                playPreviousSong = viewModel::playPreviousSong,
-                                playOrPause = viewModel::playOrPause,
-                                play = viewModel::play,
-                                togglePlaylistItems = viewModel::togglePlaylistItems
                             )
                         }
                     }
