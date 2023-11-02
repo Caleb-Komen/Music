@@ -15,8 +15,3 @@ data class PlaylistSongsUiState(
     val isSongPlaying: Boolean= false,
     val sortOption: PlaylistSongsSortOption = PlaylistSongsSortOption.TITLE
 )
-
-data class SelectableSong(
-    val song: Song = Song(),
-    val selected: Boolean = false
-)
