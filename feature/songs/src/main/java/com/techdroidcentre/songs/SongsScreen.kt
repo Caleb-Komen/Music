@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -53,6 +55,8 @@ fun SongsScreen(
     val uiState by viewModel.uiState.collectAsState()
     SongsScreen(
         uiState = uiState,
+        play = viewModel::play,
+        shuffle = viewModel::shuffle,
         playOrPause = viewModel::playOrPause,
         onSortSongs = viewModel::setSongsSortOption,
         modifier = modifier
@@ -62,6 +66,8 @@ fun SongsScreen(
 @Composable
 fun SongsScreen(
     uiState: SongsUiState,
+    play: () -> Unit,
+    shuffle: () -> Unit,
     playOrPause: (Song) -> Unit,
     onSortSongs: (SongsSortOption) -> Unit,
     modifier: Modifier = Modifier
@@ -82,6 +88,16 @@ fun SongsScreen(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
+                item {
+                    Column {
+                        MediaControls(
+                            play = play,
+                            shuffle = shuffle,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
                 items(items = uiState.songs, key = { it.id }) { song ->
                     SongItem(
                         song = song,
@@ -116,7 +132,9 @@ fun SongsTopBar(
             text = "Songs",
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 24.dp).weight(1f)
+            modifier = Modifier
+                .padding(start = 24.dp)
+                .weight(1f)
         )
         Box {
             IconButton(
@@ -148,6 +166,37 @@ fun EmptySongsScreen(modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.titleMedium,
         modifier = modifier
     )
+}
+
+@Composable
+fun MediaControls(
+    play: () -> Unit,
+    shuffle: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+    ) {
+        Button(
+            onClick = play,
+            modifier = Modifier.weight(1f),
+            shape = CircleShape
+        ) {
+            Text(
+                text = "Play"
+            )
+        }
+        Spacer(modifier = Modifier.width(16.dp))
+        Button(
+            onClick = shuffle,
+            modifier = Modifier.weight(1f),
+            shape = CircleShape
+        ) {
+            Text(
+                text = "Shuffle"
+            )
+        }
+    }
 }
 
 @Composable

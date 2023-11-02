@@ -1,6 +1,7 @@
 package com.techdroidcentre.songs
 
 import android.content.Context
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
@@ -13,8 +14,10 @@ import androidx.media3.session.MediaBrowser
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
 import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.ShuffleMode
 import com.techdroidcentre.data.datastore.SongsSortOption
 import com.techdroidcentre.model.Song
+import com.techdroidcentre.player.MusicService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -36,6 +39,34 @@ class SongsViewModel(
         fetchSongs(songsId)
         fetchCurrentlyPlayingSong()
         fetchPlayingState()
+    }
+
+    fun play() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val children = musicServiceConnection.getChildren(songsId).toMutableList()
+        val mediaItems = when (_uiState.value.sortOption) {
+            SongsSortOption.TITLE -> children.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+            SongsSortOption.ARTIST -> children.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+        }
+        player.setMediaItems(mediaItems)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
+        setShuffleMode(ShuffleMode.OFF)
+        player.prepare()
+        player.play()
+    }
+
+    fun shuffle() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val children = musicServiceConnection.getChildren(songsId).toMutableList()
+        val mediaItems = when (_uiState.value.sortOption) {
+            SongsSortOption.TITLE -> children.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+            SongsSortOption.ARTIST -> children.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+        }
+        player.setMediaItems(mediaItems)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
+        setShuffleMode(ShuffleMode.ON)
+        player.prepare()
+        player.play()
     }
 
     fun playOrPause(song: Song) {
@@ -129,6 +160,12 @@ class SongsViewModel(
     fun setSongsSortOption(songsSortOption: SongsSortOption) {
         viewModelScope.launch {
             musicDataStore.setSongsSortOption(songsSortOption)
+        }
+    }
+
+    private fun setShuffleMode(shuffleMode: ShuffleMode) {
+        viewModelScope.launch {
+            musicDataStore.setShuffleMode(shuffleMode)
         }
     }
 
