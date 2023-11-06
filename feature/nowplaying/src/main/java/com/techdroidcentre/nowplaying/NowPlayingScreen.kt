@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -44,6 +46,7 @@ fun NowPlayingScreen(
     playOrPause: () -> Unit,
     play: (String) -> Unit,
     togglePlaylistItems: () -> Unit,
+    toggleShuffleMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -65,7 +68,10 @@ fun NowPlayingScreen(
             Spacer(Modifier.height(16.dp))
             PlaybackMetadata(song = uiState.song)
             Spacer(Modifier.height(16.dp))
-            PlaybackOptions()
+            PlaybackOptions(
+                shuffleModeEnabled = uiState.shuffleModeEnabled,
+                toggleShuffleMode = toggleShuffleMode
+            )
         }
         Spacer(Modifier.height(16.dp))
         PlaybackControls(
@@ -132,6 +138,8 @@ fun PlaybackMetadata(
 
 @Composable
 fun PlaybackOptions(
+    shuffleModeEnabled: Boolean,
+    toggleShuffleMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -140,12 +148,13 @@ fun PlaybackOptions(
         modifier = modifier.fillMaxWidth()
     ) {
         IconButton(
-            onClick = {},
+            onClick = toggleShuffleMode,
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_shuffle_24),
-                contentDescription = "Shuffle"
+                contentDescription = "Shuffle",
+                tint = if (shuffleModeEnabled) MaterialTheme.colorScheme.primary else LocalContentColor.current
             )
         }
         IconButton(

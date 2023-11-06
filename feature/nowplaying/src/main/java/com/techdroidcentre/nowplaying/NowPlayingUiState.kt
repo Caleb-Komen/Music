@@ -8,5 +8,6 @@ data class NowPlayingUiState(
     val duration: Long = 0L,
     val position: Long = 0L,
     val showPlaylistItems: Boolean = false,
-    val playlistItems: List<Song> = emptyList()
+    val playlistItems: List<Song> = emptyList(),
+    val shuffleModeEnabled: Boolean = false
 )

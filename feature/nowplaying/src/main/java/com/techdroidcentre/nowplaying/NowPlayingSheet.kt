@@ -116,7 +116,8 @@ fun NowPlayingSheet(
                                         playPreviousSong = viewModel::playPreviousSong,
                                         playOrPause = viewModel::playOrPause,
                                         play = viewModel::play,
-                                        togglePlaylistItems = viewModel::togglePlaylistItems
+                                        togglePlaylistItems = viewModel::togglePlaylistItems,
+                                        toggleShuffleMode = viewModel::toggleShuffleMode
                                     )
                                 }
                             }

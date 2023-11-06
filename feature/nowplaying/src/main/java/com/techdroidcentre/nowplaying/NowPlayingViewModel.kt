@@ -9,17 +9,21 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
+import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.ShuffleMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NowPlayingViewModel @Inject constructor(
-    private val musicServiceConnection: MusicServiceConnection
+    private val musicServiceConnection: MusicServiceConnection,
+    private val musicDataStore: MusicDataStore
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NowPlayingUiState())
     val uiState: StateFlow<NowPlayingUiState> = _uiState
@@ -50,6 +54,7 @@ class NowPlayingViewModel @Inject constructor(
                 it.copy(isPlaying = isPlaying)
             }
         }.launchIn(viewModelScope)
+        getShuffleMode()
     }
 
     private fun updatePosition() {
@@ -142,6 +147,11 @@ class NowPlayingViewModel @Inject constructor(
         }
     }
 
+    fun toggleShuffleMode() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        setShuffleMode(if (player.shuffleModeEnabled) ShuffleMode.OFF else ShuffleMode.ON)
+    }
+
     private fun fetchPlaylistItems() {
         val playlist = getPlaylistItems()
         _uiState.update {
@@ -168,5 +178,21 @@ class NowPlayingViewModel @Inject constructor(
             windowIndex = player.currentTimeline.getNextWindowIndex(windowIndex, player.repeatMode, player.shuffleModeEnabled)
         }
         return player.currentMediaItemIndex
+    }
+
+    private fun setShuffleMode(shuffleMode: ShuffleMode) {
+        viewModelScope.launch {
+            musicDataStore.setShuffleMode(shuffleMode)
+        }
+    }
+
+    private fun getShuffleMode() {
+        viewModelScope.launch {
+            musicDataStore.getShuffleMode().collect { shuffleMode ->
+                _uiState.update {
+                    it.copy(shuffleModeEnabled = shuffleMode == ShuffleMode.ON)
+                }
+            }
+        }
     }
 }
