@@ -43,7 +43,6 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
-    implementation(project(":player"))
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
