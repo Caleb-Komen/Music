@@ -10,6 +10,7 @@ import androidx.media3.common.Player
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.common.toSong
 import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.RepeatMode
 import com.techdroidcentre.data.datastore.ShuffleMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,6 +56,7 @@ class NowPlayingViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
         getShuffleMode()
+        getRepeatMode()
     }
 
     private fun updatePosition() {
@@ -152,6 +154,16 @@ class NowPlayingViewModel @Inject constructor(
         setShuffleMode(if (player.shuffleModeEnabled) ShuffleMode.OFF else ShuffleMode.ON)
     }
 
+    fun updateRepeatMode() {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+        val repeatMode = when (player.repeatMode) {
+            Player.REPEAT_MODE_OFF -> RepeatMode.ALL
+            Player.REPEAT_MODE_ALL -> RepeatMode.ONE
+            else -> RepeatMode.OFF
+        }
+        setRepeatMode(repeatMode)
+    }
+
     private fun fetchPlaylistItems() {
         val playlist = getPlaylistItems()
         _uiState.update {
@@ -191,6 +203,22 @@ class NowPlayingViewModel @Inject constructor(
             musicDataStore.getShuffleMode().collect { shuffleMode ->
                 _uiState.update {
                     it.copy(shuffleModeEnabled = shuffleMode == ShuffleMode.ON)
+                }
+            }
+        }
+    }
+
+    private fun setRepeatMode(repeatMode: RepeatMode) {
+        viewModelScope.launch {
+            musicDataStore.setRepeatMode(repeatMode)
+        }
+    }
+
+    private fun getRepeatMode() {
+        viewModelScope.launch {
+            musicDataStore.getRepeatMode().collect { repeatMode ->
+                _uiState.update {
+                    it.copy(repeatMode = repeatMode)
                 }
             }
         }

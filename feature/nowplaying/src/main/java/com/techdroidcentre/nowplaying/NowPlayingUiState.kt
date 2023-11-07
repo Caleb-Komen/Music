@@ -1,5 +1,6 @@
 package com.techdroidcentre.nowplaying
 
+import com.techdroidcentre.data.datastore.RepeatMode
 import com.techdroidcentre.model.Song
 
 data class NowPlayingUiState(
@@ -9,5 +10,6 @@ data class NowPlayingUiState(
     val position: Long = 0L,
     val showPlaylistItems: Boolean = false,
     val playlistItems: List<Song> = emptyList(),
-    val shuffleModeEnabled: Boolean = false
+    val shuffleModeEnabled: Boolean = false,
+    val repeatMode: RepeatMode = RepeatMode.OFF
 )

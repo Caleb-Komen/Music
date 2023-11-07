@@ -8,6 +8,7 @@ import androidx.media3.session.MediaBrowser
 import com.google.common.util.concurrent.MoreExecutors
 import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.data.datastore.MusicDataStore
+import com.techdroidcentre.data.datastore.RepeatMode
 import com.techdroidcentre.data.datastore.ShuffleMode
 import com.techdroidcentre.player.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,11 +32,10 @@ class MainViewModel @Inject constructor(
     init {
         combine(
             musicServiceConnection.mediaBrowser,
-            musicDataStore.getShuffleMode()
-        ) { browser, shuffleMode ->
-            browser to shuffleMode
-        }.onEach { (browser, shuffleMode) ->
-            val mediaBrowser: MediaBrowser = browser ?: return@onEach
+            musicDataStore.getShuffleMode(),
+            musicDataStore.getRepeatMode()
+        ) { browser, shuffleMode, repeatMode ->
+            val mediaBrowser: MediaBrowser = browser ?: return@combine
             val rootFuture = mediaBrowser.getLibraryRoot(null)
             when (shuffleMode) {
                 ShuffleMode.ON -> {
@@ -46,6 +46,12 @@ class MainViewModel @Inject constructor(
                     if (mediaBrowser.shuffleModeEnabled)
                         mediaBrowser.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
                 }
+            }
+
+            when (repeatMode) {
+                RepeatMode.ONE -> mediaBrowser.sendCustomCommand(MusicService.COMMAND_REPEAT_MODE_ONE, Bundle.EMPTY)
+                RepeatMode.ALL -> mediaBrowser.sendCustomCommand(MusicService.COMMAND_REPEAT_MODE_ALL, Bundle.EMPTY)
+                RepeatMode.OFF -> mediaBrowser.sendCustomCommand(MusicService.COMMAND_REPEAT_MODE_OFF, Bundle.EMPTY)
             }
 
             rootFuture.addListener(

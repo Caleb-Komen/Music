@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.data.datastore.RepeatMode
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.model.Song
 import java.util.concurrent.TimeUnit
@@ -47,6 +48,7 @@ fun NowPlayingScreen(
     play: (String) -> Unit,
     togglePlaylistItems: () -> Unit,
     toggleShuffleMode: () -> Unit,
+    updateRepeatMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -70,7 +72,9 @@ fun NowPlayingScreen(
             Spacer(Modifier.height(16.dp))
             PlaybackOptions(
                 shuffleModeEnabled = uiState.shuffleModeEnabled,
-                toggleShuffleMode = toggleShuffleMode
+                repeatMode = uiState.repeatMode,
+                toggleShuffleMode = toggleShuffleMode,
+                updateRepeatMode = updateRepeatMode
             )
         }
         Spacer(Modifier.height(16.dp))
@@ -139,9 +143,16 @@ fun PlaybackMetadata(
 @Composable
 fun PlaybackOptions(
     shuffleModeEnabled: Boolean,
+    repeatMode: RepeatMode,
     toggleShuffleMode: () -> Unit,
+    updateRepeatMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val repeatIcon = when (repeatMode) {
+        RepeatMode.ONE -> painterResource(id = R.drawable.baseline_repeat_one_on_24)
+        RepeatMode.ALL -> painterResource(id = R.drawable.baseline_repeat_on_24)
+        RepeatMode.OFF -> painterResource(id = R.drawable.baseline_repeat_24)
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -167,11 +178,11 @@ fun PlaybackOptions(
             )
         }
         IconButton(
-            onClick = {},
+            onClick = updateRepeatMode,
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_repeat_24),
+                painter = repeatIcon,
                 contentDescription = "Repeat"
             )
         }

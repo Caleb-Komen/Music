@@ -18,6 +18,7 @@ class MusicDataStore @Inject constructor(@ApplicationContext val context: Contex
     private val playlistSongsSortOptionKey = intPreferencesKey("playlist_songs_sort_option")
     private val artistAlbumsSortOptionKey = intPreferencesKey("artist_albums_sort_option")
     private val shuffleModeKey = intPreferencesKey("shuffle_mode")
+    private val repeatModeKey = intPreferencesKey("repeat_mode")
 
     suspend fun setSongsSortOption(songsSortOption: SongsSortOption) {
         context.dataStore.edit { preferences ->
@@ -43,6 +44,12 @@ class MusicDataStore @Inject constructor(@ApplicationContext val context: Contex
         }
     }
 
+    suspend fun setRepeatMode(repeatMode: RepeatMode) {
+        context.dataStore.edit { preferences ->
+            preferences[repeatModeKey] = repeatMode.ordinal
+        }
+    }
+
     fun getSongsSortOption(): Flow<SongsSortOption> {
         return context.dataStore.data.map { preferences ->
             SongsSortOption.values()[preferences[songsSortOptionKey] ?: SongsSortOption.TITLE.ordinal]
@@ -64,6 +71,12 @@ class MusicDataStore @Inject constructor(@ApplicationContext val context: Contex
     fun getShuffleMode(): Flow<ShuffleMode> {
         return context.dataStore.data.map { preferences ->
             ShuffleMode.values()[preferences[shuffleModeKey] ?: ShuffleMode.OFF.ordinal]
+        }
+    }
+
+    fun getRepeatMode(): Flow<RepeatMode> {
+        return context.dataStore.data.map {preferences ->
+            RepeatMode.values()[preferences[repeatModeKey] ?: RepeatMode.OFF.ordinal]
         }
     }
 }
