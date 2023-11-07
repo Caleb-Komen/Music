@@ -153,6 +153,7 @@ fun PlaybackOptions(
         RepeatMode.ALL -> painterResource(id = R.drawable.baseline_repeat_on_24)
         RepeatMode.OFF -> painterResource(id = R.drawable.baseline_repeat_24)
     }
+    val shuffleIcon = if (shuffleModeEnabled) painterResource(R.drawable.baseline_shuffle_on_24) else painterResource(R.drawable.baseline_shuffle_24)
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -163,9 +164,8 @@ fun PlaybackOptions(
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_shuffle_24),
-                contentDescription = "Shuffle",
-                tint = if (shuffleModeEnabled) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                painter = shuffleIcon,
+                contentDescription = "Shuffle"
             )
         }
         IconButton(
