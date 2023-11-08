@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.techdroidcentre.database.MusicDatabase
 import com.techdroidcentre.database.dao.PlaylistSongsDao
 import com.techdroidcentre.database.dao.PlaylistsDao
+import com.techdroidcentre.database.dao.TopAlbumsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,4 +33,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun providePlaylistSongsDao(database: MusicDatabase): PlaylistSongsDao = database.playlistSongsDao
+
+    @Provides
+    @Singleton
+    fun provideTopAlbumsDao(database: MusicDatabase): TopAlbumsDao = database.topAlbumsDao
 }

@@ -36,6 +36,9 @@ fun MusicNavHost(
         homeScreen(
             navigateToPlaylistsScreen = {
                 navController.navigateToPlaylistsScreen()
+            },
+            navigateToAlbumDetail = { albumId ->
+                navController.navigateToAlbumDetails(albumId)
             }
         )
         songsScreen(songsId = rootChildren.first { it.mediaId == SONGS_ID }.mediaId)

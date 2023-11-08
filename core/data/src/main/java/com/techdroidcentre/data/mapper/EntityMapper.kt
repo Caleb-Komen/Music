@@ -1,9 +1,13 @@
 package com.techdroidcentre.data.mapper
 
+import com.techdroidcentre.data.model.AlbumEntity
 import com.techdroidcentre.database.model.PlaylistEntity
 import com.techdroidcentre.database.model.PlaylistSongEntity
+import com.techdroidcentre.database.model.TopAlbumEntity
+import com.techdroidcentre.model.Album
 import com.techdroidcentre.model.Playlist
 import com.techdroidcentre.model.Song
+import com.techdroidcentre.model.TopAlbum
 
 fun Playlist.toEntity() = PlaylistEntity(
     id = id,
@@ -35,4 +39,28 @@ fun PlaylistSongEntity.toModel() = Song(
     trackNumber = trackNumber,
     artworkUri = artworkUri,
     artworkData = artworkData
+)
+
+fun TopAlbum.toEntity() = TopAlbumEntity(albumId = albumId, totalPlayCount = totalPlayCount)
+
+fun TopAlbumEntity.toModel() = TopAlbum(albumId = albumId, totalPlayCount = totalPlayCount)
+
+fun AlbumEntity.toModel() = Album(
+    id = id,
+    uri = uri,
+    name = name,
+    artist = artist,
+    artworkUri = artworkUri,
+    noOfSongs = noOfSongs,
+    year = year,
+)
+
+fun Album.toEntity() = AlbumEntity(
+    id = id,
+    uri = uri,
+    name = name,
+    artist = artist,
+    artworkUri = artworkUri,
+    noOfSongs = noOfSongs,
+    year = year,
 )
