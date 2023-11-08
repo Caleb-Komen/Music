@@ -12,6 +12,10 @@ import com.techdroidcentre.common.toSong
 import com.techdroidcentre.data.datastore.MusicDataStore
 import com.techdroidcentre.data.datastore.RepeatMode
 import com.techdroidcentre.data.datastore.ShuffleMode
+import com.techdroidcentre.data.repository.AlbumsRepository
+import com.techdroidcentre.data.repository.DefaultAlbumsRepository
+import com.techdroidcentre.data.repository.TopAlbumsRepository
+import com.techdroidcentre.model.TopAlbum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +28,9 @@ import javax.inject.Inject
 @HiltViewModel
 class NowPlayingViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection,
-    private val musicDataStore: MusicDataStore
+    private val musicDataStore: MusicDataStore,
+    private val topAlbumsRepository: TopAlbumsRepository,
+    private val albumsRepository: AlbumsRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NowPlayingUiState())
     val uiState: StateFlow<NowPlayingUiState> = _uiState
@@ -40,6 +46,7 @@ class NowPlayingViewModel @Inject constructor(
                     )
                 }
                 fetchPlaylistItems()
+                addTopAlbum(mediaItem)
             }
         }.launchIn(viewModelScope)
         musicServiceConnection.duration.onEach { duration ->
@@ -221,6 +228,18 @@ class NowPlayingViewModel @Inject constructor(
                     it.copy(repeatMode = repeatMode)
                 }
             }
+        }
+    }
+
+    private fun addTopAlbum(nowPlaying: MediaItem) {
+        viewModelScope.launch {
+            val albumId = (albumsRepository as DefaultAlbumsRepository).albumSongs.values.first { songs ->
+                songs.map { it.id }.contains(nowPlaying.mediaId.toLong())
+            }.first().albumId
+            val topAlbum = topAlbumsRepository.getTopAlbum(albumId)
+            topAlbum?.let {
+                topAlbumsRepository.addTopAlbum(TopAlbum(it.albumId, it.totalPlayCount + 1))
+            } ?: topAlbumsRepository.addTopAlbum(TopAlbum(albumId, 1))
         }
     }
 }
