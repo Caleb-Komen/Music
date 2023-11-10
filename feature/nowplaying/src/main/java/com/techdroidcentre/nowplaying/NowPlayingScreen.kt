@@ -19,6 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -202,10 +206,20 @@ fun PlaybackControls(
     togglePlaylistItems: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var sliderPosition by remember { mutableStateOf<Float?>(null) }
+
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.Bottom) {
         Slider(
-            value = position.toFloat(),
-            onValueChange = onPositionChange,
+            value = sliderPosition ?: position.toFloat(),
+            onValueChange = {
+                sliderPosition = it
+            },
+            onValueChangeFinished = {
+                sliderPosition?.let {
+                    onPositionChange(it)
+                    sliderPosition = null
+                }
+            },
             valueRange = 0f..duration.toFloat(),
             modifier = Modifier.padding(horizontal = 8.dp)
         )
@@ -215,7 +229,7 @@ fun PlaybackControls(
                 .padding(horizontal = 8.dp)
         ) {
             Text(
-                text = formatDuration(position),
+                text = formatDuration(sliderPosition?.toLong() ?: position),
                 modifier = Modifier.align(Alignment.TopStart)
             )
             Text(
