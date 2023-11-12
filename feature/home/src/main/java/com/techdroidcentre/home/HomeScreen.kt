@@ -13,14 +13,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,6 +48,7 @@ import coil.request.ImageRequest
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 import com.techdroidcentre.model.Album
+import com.techdroidcentre.model.Song
 
 @Composable
 fun HomeScreen(
@@ -81,6 +86,14 @@ fun HomeScreen(
                     )
                 }
             }
+            recentlyPlayedSongs(songs = uiState.recentlyPlayed)
+            /*item {
+                AnimatedVisibility (
+                    visible = uiState.recentlyPlayed.isNotEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut
+                }
+            }*/
         }
     }
 }
@@ -143,6 +156,20 @@ fun TopAlbumsRow(
     }
 }
 
+fun LazyListScope.recentlyPlayedSongs(songs: List<Song>) {
+    item {
+        Text(
+            text = "Recently Played Songs",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
+    }
+    items(items = songs, key = { it.id }) { song ->
+        RecentlyAddedSongItem(song = song)
+    }
+}
+
 @Composable
 fun TopAlbumItem(
     album: Album,
@@ -176,6 +203,49 @@ fun TopAlbumItem(
                 .padding(top = 8.dp)
                 .fillMaxWidth()
         )
+    }
+}
+
+@Composable
+fun RecentlyAddedSongItem(
+    song: Song,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(vertical = 4.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(song.artworkData)
+                    .crossfade(true)
+                    .build(),
+                error = painterResource(MusicIcons.defaultMusicNote),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(MaterialTheme.shapes.medium),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Text(
+                    text = song.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "${song.album} - ${song.artist}",
+                    style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Divider(thickness = 0.5.dp)
     }
 }
 
