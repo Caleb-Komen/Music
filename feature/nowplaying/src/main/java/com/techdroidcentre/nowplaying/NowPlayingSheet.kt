@@ -1,6 +1,8 @@
 package com.techdroidcentre.nowplaying
 
 import android.app.Activity
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,6 +57,7 @@ import coil.request.ImageRequest
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @ExperimentalMaterial3Api
 @Composable
 fun NowPlayingSheet(
@@ -149,10 +152,9 @@ fun NowPlayingSheet(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = uiState.song.title,
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f).basicMarquee(),
                             style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            maxLines = 1
                         )
                         IconButton(onClick = viewModel::playOrPause) {
                             if (uiState.isPlaying) {

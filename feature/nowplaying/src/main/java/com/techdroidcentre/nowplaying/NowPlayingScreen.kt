@@ -1,5 +1,7 @@
 package com.techdroidcentre.nowplaying
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -117,6 +119,7 @@ fun PlaybackImage(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PlaybackMetadata(
     song: Song,
@@ -133,7 +136,7 @@ fun PlaybackMetadata(
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            modifier = Modifier.basicMarquee()
         )
         Spacer(Modifier.height(8.dp))
         Text(
