@@ -11,6 +11,8 @@ import com.techdroidcentre.albums.navigation.albumsScreen
 import com.techdroidcentre.artistdetails.navigation.artistDetailsScreen
 import com.techdroidcentre.artistdetails.navigation.navigateToArtistDetails
 import com.techdroidcentre.artists.navigation.artistsScreen
+import com.techdroidcentre.favourites.navigation.favouriteSongsScreen
+import com.techdroidcentre.favourites.navigation.navigateToFavouriteSongs
 import com.techdroidcentre.home.navigation.homeNavigationRoute
 import com.techdroidcentre.home.navigation.homeScreen
 import com.techdroidcentre.player.ALBUMS_ID
@@ -39,6 +41,9 @@ fun MusicNavHost(
             },
             navigateToAlbumDetail = { albumId ->
                 navController.navigateToAlbumDetails(albumId)
+            },
+            navigateToFavouriteSongs = {
+                navController.navigateToFavouriteSongs()
             }
         )
         songsScreen(songsId = rootChildren.first { it.mediaId == SONGS_ID }.mediaId)
@@ -68,5 +73,6 @@ fun MusicNavHost(
             }
         )
         playlistSongsScreen(onBackPress = { navController.popBackStack() })
+        favouriteSongsScreen(onBackPress = { navController.popBackStack() })
     }
 }

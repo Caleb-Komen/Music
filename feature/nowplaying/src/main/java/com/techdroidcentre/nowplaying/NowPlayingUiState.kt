@@ -11,5 +11,6 @@ data class NowPlayingUiState(
     val showPlaylistItems: Boolean = false,
     val playlistItems: List<Song> = emptyList(),
     val shuffleModeEnabled: Boolean = false,
-    val repeatMode: RepeatMode = RepeatMode.OFF
+    val repeatMode: RepeatMode = RepeatMode.OFF,
+    val isFavourite: Boolean = false
 )

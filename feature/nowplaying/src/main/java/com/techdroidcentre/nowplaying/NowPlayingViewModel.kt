@@ -2,6 +2,7 @@ package com.techdroidcentre.nowplaying
 
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
@@ -14,6 +15,7 @@ import com.techdroidcentre.data.datastore.RepeatMode
 import com.techdroidcentre.data.datastore.ShuffleMode
 import com.techdroidcentre.data.repository.AlbumsRepository
 import com.techdroidcentre.data.repository.DefaultAlbumsRepository
+import com.techdroidcentre.data.repository.FavouriteSongsRepository
 import com.techdroidcentre.data.repository.RecentlyPlayedRepository
 import com.techdroidcentre.data.repository.TopAlbumsRepository
 import com.techdroidcentre.model.RecentlyPlayed
@@ -34,6 +36,7 @@ class NowPlayingViewModel @Inject constructor(
     private val topAlbumsRepository: TopAlbumsRepository,
     private val albumsRepository: AlbumsRepository,
     private val recentlyPlayedRepository: RecentlyPlayedRepository,
+    private val favouriteSongsRepository: FavouriteSongsRepository
 ): ViewModel() {
     private val _uiState = MutableStateFlow(NowPlayingUiState())
     val uiState: StateFlow<NowPlayingUiState> = _uiState
@@ -51,6 +54,7 @@ class NowPlayingViewModel @Inject constructor(
                 fetchPlaylistItems()
                 addTopAlbum(mediaItem)
                 addRecentlyPlayed(mediaItem)
+                fetchIsFavourite(mediaItem.mediaId.toLong())
             }
         }.launchIn(viewModelScope)
         musicServiceConnection.duration.onEach { duration ->
@@ -255,6 +259,22 @@ class NowPlayingViewModel @Inject constructor(
                     time = System.currentTimeMillis()
                 )
             )
+        }
+    }
+
+    private fun fetchIsFavourite(songId: Long) {
+        viewModelScope.launch {
+            favouriteSongsRepository.isFavourite(songId).collect { isFavourite ->
+                _uiState.update {
+                    it.copy(isFavourite = isFavourite)
+                }
+            }
+        }
+    }
+
+    fun toggleFavourite(songId: Long) {
+        viewModelScope.launch {
+            favouriteSongsRepository.toggleFavourite(songId)
         }
     }
 }
