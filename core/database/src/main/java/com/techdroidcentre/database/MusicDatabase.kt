@@ -3,10 +3,12 @@ package com.techdroidcentre.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.techdroidcentre.database.dao.FavouriteSongsDao
 import com.techdroidcentre.database.dao.PlaylistSongsDao
 import com.techdroidcentre.database.dao.PlaylistsDao
 import com.techdroidcentre.database.dao.RecentlyPlayedDao
 import com.techdroidcentre.database.dao.TopAlbumsDao
+import com.techdroidcentre.database.model.FavouriteSongEntity
 import com.techdroidcentre.database.model.PlaylistEntity
 import com.techdroidcentre.database.model.PlaylistSongCrossRef
 import com.techdroidcentre.database.model.PlaylistSongEntity
@@ -21,7 +23,8 @@ import com.techdroidcentre.database.util.ByteArrayConverter
         PlaylistSongEntity::class,
         PlaylistSongCrossRef::class,
         TopAlbumEntity::class,
-        RecentlyPlayedEntity::class
+        RecentlyPlayedEntity::class,
+        FavouriteSongEntity::class
     ],
     version = 1
 )
@@ -30,4 +33,5 @@ abstract class MusicDatabase: RoomDatabase() {
     abstract val playlistSongsDao: PlaylistSongsDao
     abstract val topAlbumsDao: TopAlbumsDao
     abstract val recentlyPlayedDao: RecentlyPlayedDao
+    abstract val favouriteSongsDao: FavouriteSongsDao
 }

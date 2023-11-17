@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +56,7 @@ import com.techdroidcentre.model.Song
 fun HomeScreen(
     navigateToPlaylistsScreen: () -> Unit,
     navigateToAlbumDetail: (String) -> Unit,
+    navigateToFavouriteSongs: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -69,10 +72,20 @@ fun HomeScreen(
         )
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
-                PlaylistsCard(
-                    navigateToPlaylistsScreen = navigateToPlaylistsScreen,
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(24.dp)
-                )
+                ) {
+                    PlaylistsCard(
+                        navigateToPlaylistsScreen = navigateToPlaylistsScreen,
+                        modifier = Modifier.weight(1f)
+                    )
+                    FavouritesCard(
+                        navigateToFavouriteSongs = navigateToFavouriteSongs,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
             }
             item {
                 AnimatedVisibility(
@@ -108,10 +121,11 @@ fun PlaylistsCard(
         onClick = navigateToPlaylistsScreen,
         modifier = modifier
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                .fillMaxSize()
         ) {
             Image(
                 painter = painterResource(MusicIcons.queueMusic),
@@ -119,9 +133,38 @@ fun PlaylistsCard(
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                 modifier = Modifier.size(40.dp)
             )
-            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Playlists",
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FavouritesCard(
+    navigateToFavouriteSongs: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = navigateToFavouriteSongs,
+        modifier = modifier
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                .fillMaxSize()
+        ) {
+            Image(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
+                modifier = Modifier.size(40.dp)
+            )
+            Text(
+                text = "Favourites",
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -253,6 +296,6 @@ fun RecentlyAddedSongItem(
 @Composable
 fun HomeScreenPreview() {
     MusicTheme {
-        HomeScreen({}, {})
+        HomeScreen({}, {}, {})
     }
 }

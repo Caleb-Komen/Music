@@ -3,6 +3,7 @@ package com.techdroidcentre.database.di
 import android.content.Context
 import androidx.room.Room
 import com.techdroidcentre.database.MusicDatabase
+import com.techdroidcentre.database.dao.FavouriteSongsDao
 import com.techdroidcentre.database.dao.PlaylistSongsDao
 import com.techdroidcentre.database.dao.PlaylistsDao
 import com.techdroidcentre.database.dao.RecentlyPlayedDao
@@ -42,4 +43,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideRecentlyPlayedDao(database: MusicDatabase): RecentlyPlayedDao = database.recentlyPlayedDao
+
+    @Provides
+    @Singleton
+    fun provideFavouriteSongsDao(database: MusicDatabase): FavouriteSongsDao = database.favouriteSongsDao
 }

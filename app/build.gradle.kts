@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":feature:albums"))
     implementation(project(":feature:artistdetails"))
     implementation(project(":feature:artists"))
+    implementation(project(":feature:favourites"))
     implementation(project(":feature:home"))
     implementation(project(":feature:nowplaying"))
     implementation(project(":feature:playlists"))

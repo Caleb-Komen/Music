@@ -8,12 +8,14 @@ const val homeNavigationRoute = "home"
 
 fun NavGraphBuilder.homeScreen(
     navigateToPlaylistsScreen: () -> Unit,
-    navigateToAlbumDetail: (String) -> Unit
+    navigateToAlbumDetail: (String) -> Unit,
+    navigateToFavouriteSongs: () -> Unit
 ) {
     composable(homeNavigationRoute) {
         HomeScreen(
             navigateToPlaylistsScreen = navigateToPlaylistsScreen,
-            navigateToAlbumDetail = navigateToAlbumDetail
+            navigateToAlbumDetail = navigateToAlbumDetail,
+            navigateToFavouriteSongs = navigateToFavouriteSongs
         )
     }
 }

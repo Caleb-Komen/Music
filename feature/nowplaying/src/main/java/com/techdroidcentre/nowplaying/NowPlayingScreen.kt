@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
@@ -55,6 +58,7 @@ fun NowPlayingScreen(
     togglePlaylistItems: () -> Unit,
     toggleShuffleMode: () -> Unit,
     updateRepeatMode: () -> Unit,
+    toggleFavourite: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -79,8 +83,10 @@ fun NowPlayingScreen(
             PlaybackOptions(
                 shuffleModeEnabled = uiState.shuffleModeEnabled,
                 repeatMode = uiState.repeatMode,
+                isFavourite = uiState.isFavourite,
                 toggleShuffleMode = toggleShuffleMode,
-                updateRepeatMode = updateRepeatMode
+                updateRepeatMode = updateRepeatMode,
+                toggleFavourite = { toggleFavourite(uiState.song.id) }
             )
         }
         Spacer(Modifier.height(16.dp))
@@ -151,8 +157,10 @@ fun PlaybackMetadata(
 fun PlaybackOptions(
     shuffleModeEnabled: Boolean,
     repeatMode: RepeatMode,
+    isFavourite: Boolean,
     toggleShuffleMode: () -> Unit,
     updateRepeatMode: () -> Unit,
+    toggleFavourite: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val repeatIcon = when (repeatMode) {
@@ -161,6 +169,8 @@ fun PlaybackOptions(
         RepeatMode.OFF -> painterResource(id = R.drawable.baseline_repeat_24)
     }
     val shuffleIcon = if (shuffleModeEnabled) painterResource(R.drawable.baseline_shuffle_on_24) else painterResource(R.drawable.baseline_shuffle_24)
+    val favouriteIcon = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+    val favouriteIconTint = if (isFavourite) Color.Red else LocalContentColor.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -182,6 +192,16 @@ fun PlaybackOptions(
             Icon(
                 painter = painterResource(id = R.drawable.baseline_playlist_add_24),
                 contentDescription = "Add to playlist"
+            )
+        }
+        IconButton(
+            onClick = toggleFavourite,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = favouriteIcon,
+                contentDescription = "Favourite",
+                tint = favouriteIconTint
             )
         }
         IconButton(
