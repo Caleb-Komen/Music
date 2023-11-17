@@ -1,6 +1,7 @@
 package com.techdroidcentre.favourites
 
 import android.media.MediaMetadataRetriever
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
@@ -13,6 +14,7 @@ import com.techdroidcentre.data.repository.DefaultSongsRepository
 import com.techdroidcentre.data.repository.FavouriteSongsRepository
 import com.techdroidcentre.data.repository.SongsRepository
 import com.techdroidcentre.model.Song
+import com.techdroidcentre.player.MusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -78,6 +80,7 @@ class FavouriteSongsViewModel @Inject constructor(
             musicServiceConnection.getMediaItem(it.id.toString())
         }.toMutableList()
         player.setMediaItems(favourites)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_OFF, Bundle.EMPTY)
         setShuffleMode(ShuffleMode.OFF)
         player.prepare()
         player.play()
@@ -89,6 +92,7 @@ class FavouriteSongsViewModel @Inject constructor(
             musicServiceConnection.getMediaItem(it.id.toString())
         }.toMutableList()
         player.setMediaItems(favourites)
+        player.sendCustomCommand(MusicService.COMMAND_SHUFFLE_MODE_ON, Bundle.EMPTY)
         setShuffleMode(ShuffleMode.ON)
         player.prepare()
         player.play()
@@ -109,9 +113,13 @@ class FavouriteSongsViewModel @Inject constructor(
             val favourites = _uiState.value.songs.map {
                 musicServiceConnection.getMediaItem(it.id.toString())
             }.toMutableList()
-            val mediaItem = favourites.first { it.mediaId == id }
-            val startIndex = favourites.indexOf(mediaItem)
-            player.setMediaItems(favourites, startIndex, C.TIME_UNSET)
+            val mediaItems = when (_uiState.value.sortOption) {
+                FavouriteSongsSortOption.TITLE -> favourites.sortedBy { mediaItem -> mediaItem.mediaMetadata.title.toString() }
+                FavouriteSongsSortOption.ARTIST -> favourites.sortedBy { mediaItem -> mediaItem.mediaMetadata.artist.toString() }
+            }
+            val mediaItem = mediaItems.first { it.mediaId == id }
+            val startIndex = mediaItems.indexOf(mediaItem)
+            player.setMediaItems(mediaItems, startIndex, C.TIME_UNSET)
             player.prepare()
             player.play()
         }
