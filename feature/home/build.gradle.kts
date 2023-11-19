@@ -9,9 +9,12 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
+
+    implementation(libs.androidx.media3.session)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)

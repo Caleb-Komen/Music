@@ -99,7 +99,7 @@ fun HomeScreen(
                     )
                 }
             }
-            recentlyPlayedSongs(songs = uiState.recentlyPlayed)
+            recentlyPlayedSongs(songs = uiState.recentlyPlayed, playOrPause = viewModel::playOrPause)
             /*item {
                 AnimatedVisibility (
                     visible = uiState.recentlyPlayed.isNotEmpty(),
@@ -199,7 +199,7 @@ fun TopAlbumsRow(
     }
 }
 
-fun LazyListScope.recentlyPlayedSongs(songs: List<Song>) {
+fun LazyListScope.recentlyPlayedSongs(songs: List<Song>, playOrPause: (String) -> Unit,) {
     item {
         Text(
             text = "Recently Played Songs",
@@ -209,7 +209,7 @@ fun LazyListScope.recentlyPlayedSongs(songs: List<Song>) {
         )
     }
     items(items = songs, key = { it.id }) { song ->
-        RecentlyAddedSongItem(song = song)
+        RecentlyAddedSongItem(song = song, playOrPause = playOrPause)
     }
 }
 
@@ -252,9 +252,13 @@ fun TopAlbumItem(
 @Composable
 fun RecentlyAddedSongItem(
     song: Song,
+    playOrPause: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
+    Column(
+        modifier = modifier.padding(vertical = 4.dp)
+            .clickable { playOrPause(song.id.toString()) }
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 24.dp)

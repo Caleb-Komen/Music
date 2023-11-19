@@ -3,6 +3,9 @@ package com.techdroidcentre.home
 import android.media.MediaMetadataRetriever
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.C
+import androidx.media3.common.Player
+import com.techdroidcentre.common.MusicServiceConnection
 import com.techdroidcentre.data.mapper.toModel
 import com.techdroidcentre.data.repository.AlbumsRepository
 import com.techdroidcentre.data.repository.DefaultAlbumsRepository
@@ -23,7 +26,8 @@ class HomeViewModel @Inject constructor(
     private val topAlbumsRepository: TopAlbumsRepository,
     private val albumsRepository: AlbumsRepository,
     private val recentlyPlayedRepository: RecentlyPlayedRepository,
-    private val songsRepository: SongsRepository
+    private val songsRepository: SongsRepository,
+    private val musicServiceConnection: MusicServiceConnection
 ): ViewModel(){
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -79,6 +83,29 @@ class HomeViewModel @Inject constructor(
                         it.copy(recentlyPlayed = songs, error = "", loading = false)
                     }
                 }
+        }
+    }
+
+    fun playOrPause(id: String) {
+        val player = musicServiceConnection.mediaBrowser.value ?: return
+
+        val nowPlaying = musicServiceConnection.nowPlaying.value
+        val isPrepared = player.playbackState != Player.STATE_IDLE
+        if (isPrepared && id == nowPlaying.mediaId) {
+            when {
+                player.isPlaying -> player.pause()
+                player.playbackState == Player.STATE_ENDED -> player.seekTo(C.TIME_UNSET)
+                else -> player.play()
+            }
+        } else {
+            val recentlyPlayed = _uiState.value.recentlyPlayed.map {
+                musicServiceConnection.getMediaItem(it.id.toString())
+            }.toMutableList()
+            val mediaItem = recentlyPlayed.first { it.mediaId == id }
+            val startIndex = recentlyPlayed.indexOf(mediaItem)
+            player.setMediaItems(recentlyPlayed, startIndex, C.TIME_UNSET)
+            player.prepare()
+            player.play()
         }
     }
 
