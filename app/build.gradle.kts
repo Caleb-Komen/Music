@@ -64,6 +64,7 @@ dependencies {
     implementation(project(":feature:playlists"))
     implementation(project(":feature:playlistsongs"))
     implementation(project(":feature:songs"))
+    implementation(project(":feature:topalbums"))
     implementation(project(":player"))
 
     implementation(libs.androidx.core.ktx)

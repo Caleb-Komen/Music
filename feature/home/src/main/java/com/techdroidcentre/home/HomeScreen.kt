@@ -57,6 +57,7 @@ fun HomeScreen(
     navigateToPlaylistsScreen: () -> Unit,
     navigateToAlbumDetail: (String) -> Unit,
     navigateToFavouriteSongs: () -> Unit,
+    navigateToTopAlbums: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -95,18 +96,12 @@ fun HomeScreen(
                 ) {
                     TopAlbumsRow(
                         albums = uiState.topAlbums,
-                        navigateToAlbumDetail = navigateToAlbumDetail
+                        navigateToAlbumDetail = navigateToAlbumDetail,
+                        navigateToTopAlbums = navigateToTopAlbums
                     )
                 }
             }
             recentlyPlayedSongs(songs = uiState.recentlyPlayed, playOrPause = viewModel::playOrPause)
-            /*item {
-                AnimatedVisibility (
-                    visible = uiState.recentlyPlayed.isNotEmpty(),
-                    enter = fadeIn(),
-                    exit = fadeOut
-                }
-            }*/
         }
     }
 }
@@ -175,16 +170,29 @@ fun FavouritesCard(
 fun TopAlbumsRow(
     albums: List<Album>,
     navigateToAlbumDetail: (String) -> Unit,
+    navigateToTopAlbums: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lastIndex = albums.size - 1
     Column(modifier = modifier) {
-        Text(
-            text = "Top Albums",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(horizontal = 24.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        ) {
+            Text(
+                text = "Top Albums",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "More >",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(start = 8.dp)
+                    .clickable(onClick = navigateToTopAlbums)
+            )
+        }
         LazyRow(
             contentPadding = PaddingValues(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 24.dp)
         ) {
@@ -300,6 +308,6 @@ fun RecentlyAddedSongItem(
 @Composable
 fun HomeScreenPreview() {
     MusicTheme {
-        HomeScreen({}, {}, {})
+        HomeScreen({}, {}, {}, {})
     }
 }
