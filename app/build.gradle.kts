@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":feature:nowplaying"))
     implementation(project(":feature:playlists"))
     implementation(project(":feature:playlistsongs"))
+    implementation(project(":feature:recentlyplayed"))
     implementation(project(":feature:songs"))
     implementation(project(":feature:topalbums"))
     implementation(project(":player"))

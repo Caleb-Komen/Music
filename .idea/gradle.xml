@@ -42,6 +42,7 @@
             <option value="$PROJECT_DIR$/feature/nowplaying" />
             <option value="$PROJECT_DIR$/feature/playlists" />
             <option value="$PROJECT_DIR$/feature/playlistsongs" />
+            <option value="$PROJECT_DIR$/feature/recentlyplayed" />
             <option value="$PROJECT_DIR$/feature/songs" />
             <option value="$PROJECT_DIR$/feature/topalbums" />
             <option value="$PROJECT_DIR$/player" />

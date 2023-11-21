@@ -10,14 +10,16 @@ fun NavGraphBuilder.homeScreen(
     navigateToPlaylistsScreen: () -> Unit,
     navigateToAlbumDetail: (String) -> Unit,
     navigateToFavouriteSongs: () -> Unit,
-    navigateToTopAlbums: () -> Unit
+    navigateToTopAlbums: () -> Unit,
+    navigateToRecentlyPlayed: () -> Unit
 ) {
     composable(homeNavigationRoute) {
         HomeScreen(
             navigateToPlaylistsScreen = navigateToPlaylistsScreen,
             navigateToAlbumDetail = navigateToAlbumDetail,
             navigateToFavouriteSongs = navigateToFavouriteSongs,
-            navigateToTopAlbums = navigateToTopAlbums
+            navigateToTopAlbums = navigateToTopAlbums,
+            navigateToRecentlyPlayed = navigateToRecentlyPlayed
         )
     }
 }

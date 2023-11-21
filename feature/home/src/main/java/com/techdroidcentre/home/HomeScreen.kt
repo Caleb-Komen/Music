@@ -58,6 +58,7 @@ fun HomeScreen(
     navigateToAlbumDetail: (String) -> Unit,
     navigateToFavouriteSongs: () -> Unit,
     navigateToTopAlbums: () -> Unit,
+    navigateToRecentlyPlayed: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -101,7 +102,11 @@ fun HomeScreen(
                     )
                 }
             }
-            recentlyPlayedSongs(songs = uiState.recentlyPlayed, playOrPause = viewModel::playOrPause)
+            recentlyPlayedSongs(
+                songs = uiState.recentlyPlayed,
+                playOrPause = viewModel::playOrPause,
+                navigateToRecentlyPlayed = navigateToRecentlyPlayed
+            )
         }
     }
 }
@@ -207,17 +212,33 @@ fun TopAlbumsRow(
     }
 }
 
-fun LazyListScope.recentlyPlayedSongs(songs: List<Song>, playOrPause: (String) -> Unit,) {
+fun LazyListScope.recentlyPlayedSongs(
+    songs: List<Song>,
+    playOrPause: (String) -> Unit,
+    navigateToRecentlyPlayed: () -> Unit
+) {
     item {
-        Text(
-            text = "Recently Played Songs",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(horizontal = 24.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 24.dp)
+        ) {
+            Text(
+                text = "Recently Played Songs",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = "More >",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(start = 8.dp)
+                    .clickable(onClick = navigateToRecentlyPlayed)
+            )
+        }
     }
     items(items = songs, key = { it.id }) { song ->
-        RecentlyAddedSongItem(song = song, playOrPause = playOrPause)
+        RecentlyPlayedSongItem(song = song, playOrPause = playOrPause)
     }
 }
 
@@ -258,7 +279,7 @@ fun TopAlbumItem(
 }
 
 @Composable
-fun RecentlyAddedSongItem(
+fun RecentlyPlayedSongItem(
     song: Song,
     playOrPause: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -308,6 +329,6 @@ fun RecentlyAddedSongItem(
 @Composable
 fun HomeScreenPreview() {
     MusicTheme {
-        HomeScreen({}, {}, {}, {})
+        HomeScreen({}, {}, {}, {}, {})
     }
 }
