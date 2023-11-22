@@ -299,7 +299,7 @@ fun SongItem(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            Box {
+            Box(modifier = Modifier.padding(horizontal = 8.dp)) {
                 IconButton(onClick = { expanded = true }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
