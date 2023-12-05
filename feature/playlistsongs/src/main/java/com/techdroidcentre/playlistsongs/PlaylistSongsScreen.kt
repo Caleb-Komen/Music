@@ -17,12 +17,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +48,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.data.datastore.PlaylistSongsSortOption
 import com.techdroidcentre.designsystem.component.AudioWave
+import com.techdroidcentre.designsystem.component.MediaControls
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 import com.techdroidcentre.model.Playlist
@@ -124,7 +123,7 @@ fun PlaylistSongsScreen(
             onSortSongs = onSortSongs
         )
         Spacer(modifier = Modifier.height(24.dp))
-        PlaylistMediaControls(
+        MediaControls(
             play = play,
             shuffle = shuffle,
             modifier = Modifier.padding(horizontal = 24.dp)
@@ -200,37 +199,6 @@ fun PlaylistSongsTopBar(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add Songs"
-            )
-        }
-    }
-}
-
-@Composable
-fun PlaylistMediaControls(
-    play: () -> Unit,
-    shuffle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-    ) {
-        Button(
-            onClick = play,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Play"
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Button(
-            onClick = shuffle,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Shuffle"
             )
         }
     }

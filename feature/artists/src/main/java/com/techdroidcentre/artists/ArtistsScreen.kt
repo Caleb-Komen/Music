@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.techdroidcentre.designsystem.ui.DefaultScreen
 import com.techdroidcentre.model.Artist
 
 @Composable
@@ -53,9 +54,10 @@ fun ArtistsScreen(
     navigateToArtistDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier.fillMaxSize().statusBarsPadding(),
-        contentAlignment = Alignment.Center
+    DefaultScreen(
+        error = uiState.error,
+        loading = uiState.loading,
+        modifier = modifier
     ) {
         Column {
             Text(
@@ -73,14 +75,6 @@ fun ArtistsScreen(
             }
         }
         if (!uiState.loading && uiState.artists.isEmpty()) EmptyArtistsScreen(modifier = Modifier.padding(24.dp))
-
-        if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
-        }
-
-        if (uiState.loading) {
-            CircularProgressIndicator()
-        }
     }
 }
 

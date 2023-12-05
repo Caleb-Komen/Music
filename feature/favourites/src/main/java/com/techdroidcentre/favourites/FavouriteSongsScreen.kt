@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.data.datastore.FavouriteSongsSortOption
+import com.techdroidcentre.designsystem.component.MediaControls
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.favourites.components.FavouriteSongDropdownMenu
 import com.techdroidcentre.favourites.components.SortSongsDropdownMenu
@@ -156,38 +155,6 @@ fun FavouriteSongsTopBar(
                     onSortSongs(it)
                     expanded = false
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun MediaControls(
-    play: () -> Unit,
-    shuffle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-    ) {
-        Button(
-            onClick = play,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Play"
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Button(
-            onClick = shuffle,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Shuffle"
             )
         }
     }

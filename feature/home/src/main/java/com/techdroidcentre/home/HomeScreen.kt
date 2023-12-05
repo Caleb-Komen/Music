@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.component.AlbumItem
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
 import com.techdroidcentre.model.Album
@@ -202,9 +202,10 @@ fun TopAlbumsRow(
             contentPadding = PaddingValues(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 24.dp)
         ) {
             itemsIndexed(items = albums, key = { _, album -> album.id }) { index, album ->
-                TopAlbumItem(
+                AlbumItem(
                     album = album,
-                    navigateToAlbumDetail = navigateToAlbumDetail
+                    navigateToAlbumDetails = navigateToAlbumDetail,
+                    modifier = Modifier.width(128.dp)
                 )
                 if (index < lastIndex) Spacer(Modifier.width(24.dp))
             }
@@ -239,42 +240,6 @@ fun LazyListScope.recentlyPlayedSongs(
     }
     items(items = songs, key = { it.id }) { song ->
         RecentlyPlayedSongItem(song = song, playOrPause = playOrPause)
-    }
-}
-
-@Composable
-fun TopAlbumItem(
-    album: Album,
-    navigateToAlbumDetail: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .width(128.dp)
-            .clickable { navigateToAlbumDetail(album.id.toString()) }
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(album.artworkUri)
-                .crossfade(true)
-                .build(),
-            error = painterResource(MusicIcons.musicRecord),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(MaterialTheme.shapes.small),
-            contentScale = ContentScale.Crop
-        )
-        Text(
-            text = album.name,
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-        )
     }
 }
 

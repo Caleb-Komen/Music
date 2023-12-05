@@ -10,13 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,7 +38,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.data.datastore.SongsSortOption
 import com.techdroidcentre.designsystem.component.AudioWave
+import com.techdroidcentre.designsystem.component.MediaControls
 import com.techdroidcentre.designsystem.icon.MusicIcons
+import com.techdroidcentre.designsystem.ui.DefaultScreen
 import com.techdroidcentre.model.Song
 import com.techdroidcentre.songs.components.SortSongsDropdownMenu
 
@@ -72,11 +70,10 @@ fun SongsScreen(
     onSortSongs: (SongsSortOption) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    DefaultScreen(
+        error = uiState.error,
+        loading = uiState.loading,
         modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        contentAlignment = Alignment.Center
     ) {
         Column {
             SongsTopBar(
@@ -109,14 +106,6 @@ fun SongsScreen(
             }
         }
         if (!uiState.loading && uiState.songs.isEmpty()) EmptySongsScreen(modifier = Modifier.padding(24.dp))
-
-        if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
-        }
-
-        if (uiState.loading) {
-            CircularProgressIndicator()
-        }
     }
 }
 
@@ -166,37 +155,6 @@ fun EmptySongsScreen(modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.titleMedium,
         modifier = modifier
     )
-}
-
-@Composable
-fun MediaControls(
-    play: () -> Unit,
-    shuffle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-    ) {
-        Button(
-            onClick = play,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Play"
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Button(
-            onClick = shuffle,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Shuffle"
-            )
-        }
-    }
 }
 
 @Composable

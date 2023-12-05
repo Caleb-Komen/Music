@@ -16,7 +16,5 @@ dependencies {
 
     implementation(libs.androidx.media3.session)
 
-    implementation(libs.coil.compose)
-
     implementation(libs.androidx.navigation.compose)
 }

@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.designsystem.theme.MusicTheme
+import com.techdroidcentre.designsystem.ui.DefaultScreen
 import com.techdroidcentre.model.Playlist
 import com.techdroidcentre.playlists.component.NewOrUpdatePlaylistDialog
 import com.techdroidcentre.playlists.component.PlaylistDropdownMenu
@@ -57,11 +58,10 @@ fun PlaylistsScreen(
     viewModel: PlaylistsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    Box(
+    DefaultScreen(
+        error = uiState.error,
+        loading = uiState.loading,
         modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        contentAlignment = Alignment.Center
     ) {
         PlaylistsScreen(
             playlists = uiState.playlists,
@@ -73,14 +73,6 @@ fun PlaylistsScreen(
         )
 
         if (!uiState.loading && uiState.playlists.isEmpty()) EmptyPlaylistsScreen(modifier = Modifier.padding(24.dp))
-
-        if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
-        }
-
-        if (uiState.loading) {
-            CircularProgressIndicator()
-        }
     }
 }
 

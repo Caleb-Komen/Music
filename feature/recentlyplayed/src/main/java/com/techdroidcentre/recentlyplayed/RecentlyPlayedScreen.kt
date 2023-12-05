@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.techdroidcentre.designsystem.icon.MusicIcons
+import com.techdroidcentre.designsystem.ui.DefaultScreen
 import com.techdroidcentre.model.Song
 
 @Composable
@@ -51,11 +52,10 @@ fun RecentlyPlayedSongsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(
+    DefaultScreen(
+        error = uiState.error,
+        loading = uiState.loading,
         modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        contentAlignment = Alignment.Center
     ) {
         RecentlyPlayedSongs(
             songs = uiState.recentlyPlayed,
@@ -64,13 +64,6 @@ fun RecentlyPlayedSongsScreen(
             playOrPause = viewModel::playOrPause,
             onBack = onBack
         )
-        if (uiState.error.isNotBlank()) {
-            Text(text = uiState.error, modifier = Modifier.padding(24.dp))
-        }
-
-        if (uiState.loading) {
-            CircularProgressIndicator()
-        }
     }
 }
 

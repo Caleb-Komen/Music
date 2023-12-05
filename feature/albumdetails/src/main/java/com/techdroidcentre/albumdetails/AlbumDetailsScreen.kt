@@ -16,10 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.techdroidcentre.designsystem.component.MediaControls
 import com.techdroidcentre.designsystem.icon.MusicIcons
 import com.techdroidcentre.model.Song
 
@@ -97,7 +96,7 @@ fun AlbumDetailsScreen(
             item { Spacer(modifier = Modifier.height(16.dp)) }
             if (!uiState.loading && uiState.songs.isNotEmpty()) {
                 item {
-                    AlbumMediaControls(
+                    MediaControls(
                         play = play,
                         shuffle = shuffle,
                         modifier = Modifier.padding(horizontal = 24.dp)
@@ -169,37 +168,6 @@ fun AlbumInfo(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Divider(thickness = 0.5.dp)
-    }
-}
-
-@Composable
-fun AlbumMediaControls(
-    play: () -> Unit,
-    shuffle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-    ) {
-        Button(
-            onClick = play,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Play"
-            )
-        }
-        Spacer(modifier = Modifier.width(16.dp))
-        Button(
-            onClick = shuffle,
-            modifier = Modifier.weight(1f),
-            shape = CircleShape
-        ) {
-            Text(
-                text = "Shuffle"
-            )
-        }
     }
 }
 
